@@ -1154,6 +1154,13 @@ button {
   border: 1px solid rgba(255, 228, 181, 0.18);
 }
 
+.relic-icon {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+}
+
 .relic-entry.common {
   box-shadow: 0 0 0 1px rgba(255, 226, 185, 0.08);
 }

@@ -157,7 +157,7 @@ const characters = [
     spriteName: "sprite-clipmaster",
     cssClass: "char-clipmaster",
     iconKey: "clipmaster",
-    imageUrl: "",
+    imageUrl: "images/characters/higan.png",
     stats: { damage: 18, range: 160, cooldown: 1.86, crit: 0.12, critMultiplier: 1.95, projectileSpeed: 360 },
     aura: { range: 180, buffs: { critAdd: 0.18, critDamageBonus: 0.72 }, label: "血肉湧き踊る" },
     skill: { id: "viral_splice", name: "鬼の金棒！", description: "画面内の敵すべてに大ダメージを与える決戦スキル。", chargesPerStage: 1 }
@@ -349,13 +349,13 @@ function init() {
   renderSkills();
   renderSelectionPanel();
   updatePlaybackControls();
-  setTimeout(function() {
-  fitBoardToFrame();
-  setTimeout(fitBoardToFrame, 200);
-}, 0);
   updateHud();
   window.addEventListener("resize", fitBoardToFrame);
   window.requestAnimationFrame(gameLoop);
+  setTimeout(function() {
+    fitBoardToFrame();
+    setTimeout(fitBoardToFrame, 200);
+  }, 100);
 }
 
 function bindStaticEvents() {

@@ -1408,15 +1408,15 @@ function useCharacterSkill(characterId) {
   if ((state.skillCharges[characterId] || 0) <= 0 || !findPlacedCharacter(characterId)) {
     return;
   }
-  const def = characterMap.get(characterId);
+    const def = characterMap.get(characterId);
   state.skillCharges[characterId] -= 1;
-  showCutin(def.name, def.skill.name, def.iconKey);
-  shakeBoard(1.1);
-  // キャラ登場演出
-    const placedChar = findPlacedCharacter(characterId);
+  // キャラ登場演出を先に呼ぶ
+  const placedChar = findPlacedCharacter(characterId);
   const buffDur = def.skill.id === "encore_rush" ? 7 : 8;
   if (placedChar) { showCharacterEntrance(def.iconKey, placedChar, buffDur / (state.gameSpeed || 1)); }
-
+  showCutin(def.name, def.skill.name, def.iconKey);
+  shakeBoard(1.1);
+  
   if (def.skill.id === "dream_curtain") {
     state.globalBuffs.globalSlowUntil = state.now + 8;
     state.globalBuffs.globalSlowAmount = 0.35;
@@ -2377,15 +2377,12 @@ function showCharacterEntrance(iconKey, characterUnit, buffDuration) {
   el.style.left = "200px";
   el.style.top = "310px";
   el.style.transform = "translate(-50%,-50%) scale(1)";
+  // フェーズ1：フェードイン（即座に）
   el.style.opacity = "0";
   refs.cutinLayer.appendChild(el);
-
-  // フェーズ1：フェードイン
+  el.style.transition = "opacity 0.2s ease";
   requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      el.style.transition = "opacity 0.3s ease";
-      el.style.opacity = "1";
-    });
+    el.style.opacity = "1";
   });
 
   // フェーズ2：タワーへ縮小移動

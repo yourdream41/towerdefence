@@ -345,6 +345,20 @@ function createInitialState() {
 }
 
 function init() {
+    // 画像プリロード
+  const preloadImages = [];
+  [...characters, ...towers, ...relics].forEach(function(def) {
+    if (def.imageUrl && def.imageUrl !== "") {
+      const img = new Image();
+      img.src = def.imageUrl;
+      preloadImages.push(img);
+    }
+    if (def.cutinImageUrl && def.cutinImageUrl !== "") {
+      const img = new Image();
+      img.src = def.cutinImageUrl;
+      preloadImages.push(img);
+    }
+  });
   bindStaticEvents();
   renderRoute();
   renderSlots();

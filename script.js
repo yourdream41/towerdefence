@@ -349,7 +349,10 @@ function init() {
   renderSkills();
   renderSelectionPanel();
   updatePlaybackControls();
+  setTimeout(function() {
   fitBoardToFrame();
+  setTimeout(fitBoardToFrame, 200);
+}, 0);
   updateHud();
   window.addEventListener("resize", fitBoardToFrame);
   window.requestAnimationFrame(gameLoop);

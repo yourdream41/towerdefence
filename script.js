@@ -617,10 +617,9 @@ function renderSkills() {
     button.type = "button";
     button.className = "skill-button" + (ready ? " ready" : "") + (charges <= 0 ? " used" : !placed ? " disabled" : "");
     button.innerHTML = [
-      '<span class="skill-icon">', iconSvg(def.iconKey), "</span>",
+      '<span class="skill-icon">', iconImg(def), "</span>",
       '<span class="skill-name">', def.skill.name, "</span>",
-      '<span class="charges">', placed ? ("残り " + String(charges)) : "未配置", "</span>",
-      '<span class="skill-meta"><span class="meta-chip">', def.name, '</span><span class="meta-chip">1 stage / 1 use</span></span>'
+      '<span class="charges">', placed ? ("残り " + String(charges)) : "未配置", "</span>"
     ].join("");
     if (ready) {
       button.addEventListener("click", function () {

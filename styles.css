@@ -2134,7 +2134,7 @@ body {
 .hud-bottom {
   min-height: 0;
   display: grid;
-  grid-template-columns: 230px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.4fr);
   gap: 8px;
   align-items: start;
 }
@@ -2163,6 +2163,8 @@ body {
   grid-column: 1 / -1;
   grid-row: 1;
   width: auto;
+.build-panel {
+  grid-template-rows: auto auto auto;
 }
 
 .skill-console {
@@ -2710,4 +2712,5 @@ body {
     opacity: 0;
     transform: translate(calc(-50% + var(--vx)), calc(-50% + var(--vy))) scale(0.2) rotate(var(--rot));
   }
+}
 }

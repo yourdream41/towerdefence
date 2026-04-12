@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>夢愛ド リム タワーディフェンス</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell stage-theme-stage1" id="appShell">
+    <header class="hud-top hud-card">
+      <div class="top-brand">
+        <div class="brand-mark">
+          <span class="brand-sub">Broadcast x Candy Defense</span>
+          <h1>夢愛ド リム タワーディフェンス</h1>
+        </div>
+
+        <div class="stage-brief">
+          <div class="stage-brief-row">
+            <span class="ticker-pill" id="stageTicker">Stage 1</span>
+            <span class="top-progress" id="metricStage">1 / 6</span>
+            <span class="ticker-pill" id="waveTicker">Wave 0 / 0</span>
+            <span class="ticker-pill danger-pill" id="dangerTicker">Pressure Calm</span>
+          </div>
+
+          <div class="stage-title-row">
+            <strong id="stageName">配信準備室</strong>
+            <span class="countdown-label">進行</span>
+            <strong class="countdown-inline" id="countdownDisplay">準備中</strong>
+          </div>
+
+          <p class="stage-flavor" id="stageFlavor">ネオン卓の上で、甘い防衛ライブが始まる。</p>
+        </div>
+      </div>
+
+      <div class="top-controls">
+        <button class="hud-control" id="speedToggleButton" type="button">速度 1x</button>
+        <button class="hud-control" id="pauseToggleButton" type="button" disabled>ポーズ</button>
+        <button class="action-button mission-start-button" id="battleStartButton" type="button" disabled>開始</button>
+      </div>
+    </header>
+
+  <main class="playfield-layout">
+
+    <section class="build-panel hud-card">
+      <div class="panel-heading build-panel-heading">
+        <div>
+          <span class="rail-kicker">Build Bar</span>
+          <h2>配置バー</h2>
+        </div>
+        <span class="build-hint">クリックで選択、空きマスで配置</span>
+      </div>
+      <div class="build-section">
+         <div class="reserve-lane reserve-characters build-lane" id="characterReserve"></div>
+      </div>
+      <div class="build-section">
+        <div class="reserve-lane reserve-towers build-lane" id="towerReserve"></div>
+      </div>
+    </section>
+
+    <section class="board-region">
+        <div class="board-frame" id="boardFrame">
+         <details class="utility-drawer">
+        <summary class="hud-control">詳細情報</summary>
+
+          <div class="utility-panel hud-card">
+            <section class="utility-section">
+              <div class="utility-heading">
+                <span class="rail-kicker">Combo Signal</span>
+                <h2>シナジー</h2>
+              </div>
+              <div class="synergy-feed" id="synergyFeed"></div>
+            </section>
+
+            <section class="utility-section">
+              <div class="utility-heading">
+                <span class="rail-kicker">Enemy Roles</span>
+                <h2>敵の役割</h2>
+              </div>
+              <div class="legend-feed">
+                <div class="legend-item"><span class="legend-icon speed">≫</span><span>高速</span></div>
+                <div class="legend-item"><span class="legend-icon shield">▣</span><span>シールド</span></div>
+                <div class="legend-item"><span class="legend-icon noise">≈</span><span>妨害</span></div>
+                <div class="legend-item"><span class="legend-icon summon">◎</span><span>召喚 / 分裂</span></div>
+              </div>
+            </section>
+          </div>
+        </details>
+          <div class="board-inner" id="boardInner">
+            <svg class="route-svg" id="routeSvg" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <filter id="routeGlow">
+                  <feGaussianBlur stdDeviation="5" result="coloredBlur"></feGaussianBlur>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"></feMergeNode>
+                    <feMergeNode in="SourceGraphic"></feMergeNode>
+                  </feMerge>
+                </filter>
+                <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ff7b55"></stop>
+                  <stop offset="55%" stop-color="#ffd36b"></stop>
+                  <stop offset="100%" stop-color="#4de4d4"></stop>
+                </linearGradient>
+              </defs>
+              <path id="routePathShadow" class="route-path route-path-shadow"></path>
+              <path id="routePath" class="route-path"></path>
+            </svg>
+
+            <div class="board-grid-glow"></div>
+            <div class="board-decor board-decor-a"></div>
+            <div class="board-decor board-decor-b"></div>
+
+            <div class="board-layer slot-layer" id="slotLayer"></div>
+            <div class="board-layer range-layer" id="rangeLayer"></div>
+            <div class="board-layer unit-layer" id="unitLayer"></div>
+            <div class="board-layer projectile-layer" id="projectileLayer"></div>
+            <div class="board-layer enemy-layer" id="enemyLayer"></div>
+            <div class="board-layer warning-layer" id="warningLayer"></div>
+            <div class="board-layer effect-layer" id="effectLayer"></div>
+            <div class="board-layer cutin-layer" id="cutinLayer"></div>
+
+            <div class="board-center-banner" id="stageBanner"></div>
+            <div class="chain-banner" id="chainBanner"></div>
+          </div>
+        </div>
+
+<div class="buff-indicator-bar" id="buffIndicatorBar"></div>
+    
+        <div class="battle-vitals hud-card">
+          <div class="vital-card vital-card-primary">
+            <span class="vital-label">残敵</span>
+            <strong id="metricRemaining">0</strong>
+            <small>エリート <span id="metricElite">0</span></small>
+          </div>
+
+          <div class="vital-card">
+            <span class="vital-label">Wave</span>
+            <strong id="metricWave">0 / 0</strong>
+            <small id="metricBoss">ボス未出現</small>
+          </div>
+
+          <div class="vital-card">
+            <span class="vital-label">配置残</span>
+            <strong id="metricDeploy">0</strong>
+            <small>現在の予備ユニット</small>
+          </div>
+
+          <div class="pressure-shell compact">
+            <div class="pressure-label-row">
+              <span>危険度</span>
+              <strong id="pressureLabel">CALM</strong>
+            </div>
+            <div class="pressure-meter">
+              <div class="pressure-fill" id="pressureFill"></div>
+            </div>
+          </div>
+        </div>
+
+
+      </section>
+    </main>
+
+    <footer class="hud-bottom">
+      <section class="selection-panel hud-card">
+        <div class="panel-heading">
+          <span class="rail-kicker">Selection</span>
+          <h2 id="selectionTitle">配置ガイド</h2>
+        </div>
+        <p class="selection-readout" id="selectionReadout">配置したいユニットを下のバーから選んで、盤面の空きマスをクリックしてください。</p>
+        <div class="selection-tags" id="selectionTags"></div>
+        <div class="selection-stats" id="selectionStats"></div>
+      </section>
+
+      <section class="skill-console hud-card">
+        <div class="panel-heading skill-strip-head">
+          <div>
+            <span class="rail-kicker">Relic & Skill</span>
+            <h2>支援スキル</h2>
+          </div>
+          <span class="skill-hint">戦闘中のみ使用可能</span>
+        </div>
+        <div class="relic-bar relic-bar-compact" id="relicBar"></div>
+        <div class="skill-bar" id="skillBar"></div>
+      </section>
+    </footer>
+  </div>
+
+  <section class="overlay-shell overlay-visible" id="startOverlay">
+    <div class="overlay-panel title-panel">
+      <div class="overlay-header">
+        <span class="overlay-kicker">Opening Setup</span>
+        <h2>初期編成を選択</h2>
+        <p>自キャラ1体と初期タワー1種を選ぶと、ステージ1から配信を開始できます。</p>
+      </div>
+
+      <div class="selection-bay">
+        <div class="selection-column">
+          <div class="selection-column-head">
+            <span class="rail-kicker">Starter Cast</span>
+            <h3>自キャラを1体選択</h3>
+          </div>
+          <div class="selector-lane" id="startCharacterLane"></div>
+        </div>
+
+        <div class="selection-column">
+          <div class="selection-column-head">
+            <span class="rail-kicker">Starter Gear</span>
+            <h3>初期タワーを1種選択</h3>
+          </div>
+          <div class="selector-lane" id="startTowerLane"></div>
+        </div>
+      </div>
+
+      <div class="overlay-footer">
+        <div class="selection-summary" id="startSummary">自キャラとタワーを選ぶと出撃できます。</div>
+        <button class="action-button" id="startRunButton" type="button" disabled>出撃する</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="overlay-shell overlay-hidden" id="rewardOverlay">
+    <div class="overlay-panel reward-panel">
+      <div class="overlay-header">
+        <span class="overlay-kicker">Prize Conveyor</span>
+        <h2>報酬選択</h2>
+        <p>レリック・自キャラ・タワーから1つずつ選んで、次のステージへ進みます。</p>
+      </div>
+
+      <div class="coin-burst" id="coinBurst"></div>
+
+      <div class="reward-columns">
+        <section class="reward-lane-shell">
+          <div class="selection-column-head">
+            <span class="rail-kicker">Relic</span>
+            <h3>レリックを選択</h3>
+          </div>
+          <div class="selector-lane reward-lane" id="rewardRelicLane"></div>
+        </section>
+
+        <section class="reward-lane-shell">
+          <div class="selection-column-head">
+            <span class="rail-kicker">Character</span>
+            <h3>自キャラを選択</h3>
+          </div>
+          <div class="selector-lane reward-lane" id="rewardCharacterLane"></div>
+        </section>
+
+        <section class="reward-lane-shell">
+          <div class="selection-column-head">
+            <span class="rail-kicker">Tower</span>
+            <h3>タワーを選択</h3>
+          </div>
+          <div class="selector-lane reward-lane" id="rewardTowerLane"></div>
+        </section>
+      </div>
+
+      <div class="overlay-footer">
+        <div class="selection-summary" id="rewardSummary">各レーンから1つずつ選ぶと次のステージへ進めます。</div>
+        <button class="action-button" id="confirmRewardButton" type="button" disabled>次のステージへ</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="overlay-shell overlay-hidden" id="endOverlay">
+    <div class="overlay-panel ending-panel">
+      <div class="overlay-header">
+        <span class="overlay-kicker" id="endKicker">Run Result</span>
+        <h2 id="endTitle">ゲームオーバー</h2>
+        <p id="endMessage">敵がゴールへ到達したため、防衛失敗です。</p>
+      </div>
+
+      <div class="ending-grid">
+        <div class="ending-block">
+          <h3>到達ステージ</h3>
+          <div class="ending-stat" id="endStageStat">0 / 6</div>
+        </div>
+        <div class="ending-block">
+          <h3>取得レリック</h3>
+          <div class="ending-tags" id="endRelicList"></div>
+        </div>
+        <div class="ending-block">
+          <h3>加入キャラ</h3>
+          <div class="ending-tags" id="endCharacterList"></div>
+        </div>
+        <div class="ending-block">
+          <h3>所持タワー</h3>
+          <div class="ending-tags" id="endTowerList"></div>
+        </div>
+      </div>
+
+      <div class="overlay-footer">
+        <button class="action-button" id="restartButton" type="button">最初からやり直す</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="tooltip hidden" id="tooltip"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

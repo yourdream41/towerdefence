@@ -2682,23 +2682,30 @@ body {
 
 .char-entrance {
   position: absolute;
-  width: 180px;
-  height: 180px;
-  border-radius: 24px;
+  width: 540px;
+  height: 540px;
+  border-radius: 0;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 50%),
-    linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5));
-  border: 2px solid var(--entrance-color);
-  box-shadow: 0 0 32px var(--entrance-glow), 0 0 64px var(--entrance-glow), inset 0 0 24px rgba(255,255,255,0.06);
+  background: none;
+  border: none;
+  box-shadow: none;
   pointer-events: none;
   z-index: 10;
+  filter: drop-shadow(0 0 24px var(--entrance-glow)) drop-shadow(0 0 48px var(--entrance-glow));
 }
 
 .char-entrance svg {
-  width: 130px;
-  height: 130px;
+  width: 100%;
+  height: 100%;
   filter: drop-shadow(0 0 12px var(--entrance-glow)) brightness(1.4);
+}
+
+.char-entrance img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px var(--entrance-glow)) drop-shadow(0 0 40px var(--entrance-glow)) brightness(1.1);
 }
 
 .char-on-tower {

@@ -97,7 +97,8 @@ const characters = [
     spriteName: "sprite-rimu",
     cssClass: "char-rimu",
     iconKey: "rimu",
-    imageUrl: "",
+    imageUrl: "images/characters/rimu.png",
+    cutinImageUrl: "images/characters/rimu2.png",
     stats: { damage: 16, range: 180, cooldown: 1.65, crit: 0.08, critMultiplier: 1.8, projectileSpeed: 340 },
     aura: { range: 220, buffs: { slowAdd: 0.18, damageBonus: 0.08 }, label: "夢心地" },
     skill: { id: "dream_curtain", name: "ドリームタイム！", description: "全敵に開幕ダメージを与え、8秒間35%スロウ。", chargesPerStage: 1 }
@@ -109,7 +110,8 @@ const characters = [
     spriteName: "sprite-planner",
     cssClass: "char-planner",
     iconKey: "planner",
-    imageUrl: "",
+    imageUrl: "images/characters/amoko.png",
+    cutinImageUrl: "images/characters/amoko2.png",
     stats: { damage: 14, range: 100, cooldown: 1.78, crit: 0.05, critMultiplier: 1.7, projectileSpeed: 320 },
     aura: { range: 320, buffs: { damageBonus: 0.18 }, label: "甘いもの苦手" },
     skill: { id: "script_rewrite", name: "やりたい放題！", description: "8秒間、敵全体が受けるダメージを35%増加。", chargesPerStage: 1 }
@@ -121,7 +123,8 @@ const characters = [
     spriteName: "sprite-hype",
     cssClass: "char-hype",
     iconKey: "hype",
-    imageUrl: "",
+    imageUrl: "images/characters/fina.png",
+    cutinImageUrl: "images/characters/fina2.png",
     stats: { damage: 11, range: 80, cooldown: 1.52, crit: 0.06, critMultiplier: 1.7, projectileSpeed: 360 },
     aura: { range: 160, buffs: { speedBonus: 0.52 }, label: "左フックと右アッパー" },
     skill: { id: "encore_rush", name: "やっちゃえ！みんな！", description: "7秒間、タワー攻撃速度が大幅上昇。", chargesPerStage: 1 }
@@ -133,7 +136,8 @@ const characters = [
     spriteName: "sprite-patissier",
     cssClass: "char-patissier",
     iconKey: "patissier",
-    imageUrl: "",
+    imageUrl: "images/characters/yohu.png",
+    cutinImageUrl: "images/characters/yohu2.png",
     stats: { damage: 15, range: 240, cooldown: 1.72, crit: 0.08, critMultiplier: 1.85, projectileSpeed: 330 },
     aura: { range: 200, buffs: { rangeAdd: 28, critAdd: 0.10 }, label: "この広い島に" },
     skill: { id: "sugar_orchestra", name: "行くのよ！ユキちゃん！", description: "8秒間、タワー射程と範囲効果を強化。", chargesPerStage: 1 }
@@ -145,7 +149,8 @@ const characters = [
     spriteName: "sprite-moderator",
     cssClass: "char-moderator",
     iconKey: "moderator",
-    imageUrl: "",
+    imageUrl: "images/characters/anise.png",
+    cutinImageUrl: "images/characters/anise2.png",
     stats: { damage: 12, range: 140, cooldown: 1.84, crit: 0.05, critMultiplier: 1.7, projectileSpeed: 350 },
     aura: { range: 260, buffs: { slowAdd: 0.22, speedBonus: 0.06 }, label: "幻覚魔法" },
     skill: { id: "moderation_wall", name: "アブサンを飲め！", description: "敵全体の進行方向を一定時間逆転させる。", chargesPerStage: 1 }
@@ -158,6 +163,7 @@ const characters = [
     cssClass: "char-clipmaster",
     iconKey: "clipmaster",
     imageUrl: "images/characters/higan.png",
+    cutinImageUrl: "images/characters/higan2.png",
     stats: { damage: 18, range: 160, cooldown: 1.86, crit: 0.12, critMultiplier: 1.95, projectileSpeed: 360 },
     aura: { range: 180, buffs: { critAdd: 0.18, critDamageBonus: 0.72 }, label: "血肉湧き踊る" },
     skill: { id: "viral_splice", name: "鬼の金棒！", description: "画面内の敵すべてに大ダメージを与える決戦スキル。", chargesPerStage: 1 }
@@ -1509,7 +1515,7 @@ function cycleGameSpeed() {
   if (state.status !== "battle") {
     return;
   }
-  const speeds = [1, 2, 3];
+  const speeds = [1, 2, 3, 5];
   const currentIndex = speeds.indexOf(state.gameSpeed);
   state.gameSpeed = speeds[(currentIndex + 1) % speeds.length];
   updatePlaybackControls();
@@ -2312,11 +2318,18 @@ function showCutin(name, skillName, iconKey) {
   cutin.style.setProperty("--cutin-accent", palette.primary);
   cutin.style.setProperty("--cutin-sub", palette.secondary);
   cutin.style.setProperty("--cutin-glow", palette.glow);
+
+  // カットイン用画像を取得（cutinImageUrlがあれば使用）
+  const charDef = Array.from(characterMap.values()).find(function(c) { return c.iconKey === iconKey; });
+  const portraitHtml = charDef && charDef.imageUrl && charDef.imageUrl !== ""
+    ? '<img src="' + charDef.imageUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" alt="' + name + '">'
+    : iconSvg(iconKey || "trend");
+
   cutin.innerHTML = [
     '<span class="cutin-blade cutin-blade-a"></span>',
     '<span class="cutin-blade cutin-blade-b"></span>',
     '<span class="cutin-blade cutin-blade-c"></span>',
-    '<div class="cutin-portrait">', iconSvg(iconKey || "trend"), "</div>",
+    '<div class="cutin-portrait">', portraitHtml, "</div>",
     '<div class="cutin-copy">',
     '<span class="cutin-kicker">SHOWTIME SKILL</span>',
     '<div class="cutin-title">', name, "</div>",
@@ -2336,14 +2349,18 @@ function showCharacterEntrance(iconKey, characterUnit, buffDuration) {
   el.className = "char-entrance";
   el.style.setProperty("--entrance-color", palette.primary);
   el.style.setProperty("--entrance-glow", palette.glow);
-  el.innerHTML = iconSvg(iconKey);
+  const charDefForEntrance = Array.from(characterMap.values()).find(function(c) { return c.iconKey === iconKey; });
+  el.innerHTML = charDefForEntrance && charDefForEntrance.cutinImageUrl && charDefForEntrance.cutinImageUrl !== ""
+    ? '<img src="' + charDefForEntrance.cutinImageUrl + '" style="width:100%;height:100%;object-fit:contain;" alt="">'
+    : iconSvg(iconKey);
 
   // boardInner内の座標をそのまま使う
   const tx = characterUnit.x;
   const ty = characterUnit.y;
 
   // 初期位置：左側に大きく
-  el.style.left = "120px";
+  // 初期位置：左側に大きく
+  el.style.left = "200px";
   el.style.top = "310px";
   el.style.transform = "translate(-50%,-50%) scale(1)";
   el.style.opacity = "0";

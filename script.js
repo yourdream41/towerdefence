@@ -249,7 +249,7 @@ const relics = [
     activeSkill: {
       id: "sparkrain",
       name: "ドリームアタック！",
-      description: "全敵に大ダメージ。ステージごとに1回使用可能。",
+      description: "みんなで敵をタコ殴り。全敵に大ダメージ。",
       chargesPerStage: 1,
       imageUrl: "dreamattack02.png"
     }
@@ -286,6 +286,330 @@ const stages = [
   { id: "stage5", name: "スーパーチャットタイム", flavor: "やりたいことをやってお金も入ってくる！夢！？", themeClass: "stage-theme-stage5", enemyScale: { hp: 1.46, speed: 1.16 }, intermission: 3.1, introDelay: 6, waves: [ { label: "Furnace Kick", packs: [pack("rush_cycler", 3, 1.2, 0, "elite"), pack("noise_imp", 12, 0.66, 1.4), pack("split_toffee", 2, 1.4, 5.4, "elite"), pack("wafer_guard", 12, 0.88, 0)] }, { label: "Boiling Feed", packs: [pack("marsh_guard", 2, 1.6, 0.6, "elite"), pack("regen_puff", 2, 1.4, 2.2, "elite"), pack("pop_meringue", 20, 0.34, 0), pack("noise_imp", 10, 0.56, 3.8), pack("chat_blob", 15, 0.48, 4.8)] }, { label: "Last Heat", packs: [pack("split_toffee", 2, 1.5, 0, "elite"), pack("static_moth", 2, 1.4, 2.8, "elite"), pack("rush_cycler", 3, 1.1, 4.8, "elite"), pack("wafer_guard", 10, 0.78, 1.4), pack("pop_meringue", 14, 0.34, 0)] } ] },
   { id: "stage6", name: "これからもずっと", flavor: "日々怠惰との戦い！それでもみんなと未来へ！", themeClass: "stage-theme-stage6", enemyScale: { hp: 1.6, speed: 1.2 }, intermission: 2.8, introDelay: 6, waves: [ { label: "Archive Edge", packs: [pack("marsh_guard", 2, 1.2, 0, "elite"), pack("rush_cycler", 2, 1.2, 2.4, "elite"), pack("split_toffee", 2, 1.4, 5.6, "elite"), pack("noise_imp", 12, 0.54, 0)] }, { label: "System Collapse", packs: [pack("regen_puff", 2, 1.4, 0.8, "elite"), pack("static_moth", 2, 1.4, 3.6, "elite"), pack("pop_meringue", 24, 0.3, 0), pack("wafer_guard", 12, 0.74, 2.2)] }, { label: "Last Upload", packs: [pack("marsh_guard", 2, 1.5, 0.4, "elite"), pack("rush_cycler", 2, 1.2, 2.2, "elite"), pack("split_toffee", 1, 0, 4.4, "elite"), pack("pop_meringue", 18, 0.32, 0), pack("noise_imp", 12, 0.48, 2.6)] }, { label: "Boss Finale", packs: [pack("archive_drake", 1, 0, 0, "boss"), pack("noise_imp", 6, 0.8, 8.6), pack("gummy_runner", 10, 0.42, 16)] } ] }
 ];
+
+const audioState = {
+  ctx: null,
+  master: null,
+  musicBus: null,
+  sfxBus: null,
+  bgmGain: null,
+  specialBgmGain: null,
+  started: false,
+  specialUntil: 0,
+  specialPulseTimer: 0,
+  unlocked: false,
+  specialOscillators: [],
+  specialGain: null,
+  lastShotAt: 0
+};
+
+function ensureAudioContext() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return null;
+
+  if (!audioState.ctx) {
+    const ctx = new AudioContextClass();
+    const master = ctx.createGain();
+    const musicBus = ctx.createGain();
+    const sfxBus = ctx.createGain();
+    const bgmGain = ctx.createGain();
+    const specialBgmGain = ctx.createGain();
+
+    master.gain.value = 0.82;
+    musicBus.gain.value = 1;
+    sfxBus.gain.value = 0.9;
+    bgmGain.gain.value = 0.18;
+    specialBgmGain.gain.value = 0.0001;
+
+    bgmGain.connect(musicBus);
+    specialBgmGain.connect(musicBus);
+    musicBus.connect(master);
+    sfxBus.connect(master);
+    master.connect(ctx.destination);
+
+    audioState.ctx = ctx;
+    audioState.master = master;
+    audioState.musicBus = musicBus;
+    audioState.sfxBus = sfxBus;
+    audioState.bgmGain = bgmGain;
+    audioState.specialBgmGain = specialBgmGain;
+  }
+
+  if (audioState.ctx.state === "suspended") {
+    audioState.ctx.resume();
+  }
+  if (!audioState.started) {
+  audioState.started = true;
+}
+  audioState.unlocked = true;
+  return audioState.ctx;
+}
+
+function ensureAudio() {
+  if (!audioState.ctx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) {
+      return null;
+    }
+
+    const ctx = new AudioContextClass();
+    const master = ctx.createGain();
+    const music = ctx.createGain();
+    const sfx = ctx.createGain();
+    const bgmGain = ctx.createGain();
+    const specialBgmGain = ctx.createGain();
+
+    master.gain.value = 0.8;
+    music.gain.value = 0.9;
+    sfx.gain.value = 0.95;
+    bgmGain.gain.value = 0.18;
+    specialBgmGain.gain.value = 0;
+
+    bgmGain.connect(music);
+    specialBgmGain.connect(music);
+    music.connect(master);
+    sfx.connect(master);
+    master.connect(ctx.destination);
+
+    audioState.ctx = ctx;
+    audioState.master = master;
+    audioState.music = music;
+    audioState.sfx = sfx;
+    audioState.bgmGain = bgmGain;
+    audioState.specialBgmGain = specialBgmGain;
+  }
+
+  if (audioState.ctx.state === "suspended") {
+    audioState.ctx.resume();
+  }
+
+  if (!audioState.started) {
+    audioState.started = true;
+    startMainBgm();
+    startSpecialBgmLayer();
+  }
+
+  return audioState.ctx;
+}
+
+function createOsc(type, frequency, gainValue, destination, when, attack, release, duration) {
+  const ctx = audioState.ctx;
+  if (!ctx || !destination) return;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(frequency, when);
+  gain.gain.setValueAtTime(0.0001, when);
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, gainValue), when + attack);
+  gain.gain.exponentialRampToValueAtTime(0.0001, when + Math.max(attack + 0.01, duration - release));
+  osc.connect(gain);
+  gain.connect(destination);
+  osc.start(when);
+  osc.stop(when + duration);
+}
+
+function createNoiseBurst(destination, when, duration, highpassFreq, gainValue) {
+  const ctx = audioState.ctx;
+  if (!ctx || !destination || !duration || duration <= 0) return;
+  const buffer = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * duration)), ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i += 1) {
+    data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+  }
+  const source = ctx.createBufferSource();
+  const filter = ctx.createBiquadFilter();
+  const gain = ctx.createGain();
+  filter.type = "highpass";
+  filter.frequency.value = highpassFreq || 1000;
+  gain.gain.setValueAtTime(gainValue || 0.02, when);
+  gain.gain.exponentialRampToValueAtTime(0.0001, when + duration);
+  source.buffer = buffer;
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(destination);
+  source.start(when);
+  source.stop(when + duration);
+}
+
+function playPlacementSe() {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  const when = ctx.currentTime;
+
+  createOsc("triangle", 440, 0.08, audioState.sfxBus, when, 0.005, 0.08, 0.12);
+  createOsc("triangle", 660, 0.05, audioState.sfxBus, when + 0.03, 0.005, 0.08, 0.1);
+  createNoiseBurst(audioState.sfxBus, when, 0.035, 1800, 0.02);
+}
+
+function playShotSe(unit, stats) {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const when = ctx.currentTime;
+  const isHeavy = !!stats.heavy;
+  const isRapid = stats.cooldown < 0.5;
+  const base = isHeavy ? 170 : isRapid ? 520 : 340;
+  createOsc(isHeavy ? "sawtooth" : "square", base, isHeavy ? 0.045 : 0.03, audioState.sfxBus, when, 0.003, 0.06, isHeavy ? 0.14 : 0.08);
+  createOsc("triangle", base * 1.5, 0.02, audioState.sfxBus, when + 0.01, 0.002, 0.05, 0.06);
+}
+
+
+function playEnemyDownSe(enemy) {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const when = ctx.currentTime;
+  if (enemy && enemy.isBoss) {
+    createOsc("sawtooth", 180, 0.09, audioState.sfxBus, when, 0.01, 0.35, 0.5);
+    createOsc("triangle", 120, 0.1, audioState.sfxBus, when + 0.04, 0.01, 0.45, 0.65);
+    createNoiseBurst(audioState.sfxBus, when, 0.18, 240, 0.05);
+    return;
+  }
+  if (enemy && enemy.family === "elite") {
+    createOsc("square", 240, 0.06, audioState.sfxBus, when, 0.005, 0.18, 0.24);
+    createOsc("triangle", 180, 0.05, audioState.sfxBus, when + 0.02, 0.005, 0.16, 0.22);
+    return;
+  }
+  createOsc("triangle", 330, 0.04, audioState.sfxBus, when, 0.003, 0.1, 0.12);
+  createOsc("triangle", 247, 0.03, audioState.sfxBus, when + 0.03, 0.003, 0.12, 0.14);
+}
+
+function playSkillSe() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const when = ctx.currentTime;
+  createOsc("triangle", 1047, 0.12, audioState.sfxBus, when, 0.001, 0.04, 0.06);
+  createOsc("sine", 1319, 0.08, audioState.sfxBus, when + 0.03, 0.001, 0.04, 0.05);
+}
+
+function playStageClearSe() {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  const when = ctx.currentTime;
+  const notes = [523.25, 659.25, 783.99, 1046.5];
+
+  notes.forEach(function (note, index) {
+    createOsc("triangle", note, 0.06, audioState.sfxBus, when + index * 0.08, 0.005, 0.18, 0.26);
+  });
+}
+
+function playRewardSelectSe() {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  const when = ctx.currentTime;
+
+  createOsc("triangle", 660, 0.04, audioState.sfxBus, when, 0.004, 0.08, 0.1);
+  createOsc("triangle", 880, 0.03, audioState.sfxBus, when + 0.04, 0.004, 0.08, 0.12);
+}
+
+function playGameOverSe() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const when = ctx.currentTime;
+  createOsc("sawtooth", 220, 0.06, audioState.sfxBus, when, 0.01, 0.3, 0.34);
+  createOsc("triangle", 196, 0.06, audioState.sfxBus, when + 0.16, 0.01, 0.36, 0.42);
+  createOsc("triangle", 146.83, 0.05, audioState.sfxBus, when + 0.34, 0.01, 0.48, 0.56);
+}
+
+function playWaveStartSe() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const when = ctx.currentTime;
+
+  createOsc("square", 392, 0.05, audioState.sfxBus, when, 0.003, 0.07, 0.08);
+  createOsc("square", 523.25, 0.045, audioState.sfxBus, when + 0.07, 0.003, 0.08, 0.1);
+  createOsc("triangle", 783.99, 0.04, audioState.sfxBus, when + 0.15, 0.003, 0.12, 0.16);
+}
+
+function playCountdownSe(value) {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  const when = ctx.currentTime;
+  const freq = value <= 1 ? 880 : value === 2 ? 740 : 620;
+
+  createOsc("square", freq, value <= 1 ? 0.05 : 0.035, audioState.sfxBus, when, 0.002, 0.05, 0.06);
+}
+
+function startMainBgm() {
+  const ctx = audioState.ctx;
+  const notes = [220, 261.63, 329.63, 392, 329.63, 261.63];
+  const bass = [110, 110, 130.81, 146.83];
+  const leadInterval = 0.5;
+  const bassInterval = 1.0;
+
+  function scheduleLead() {
+    const now = ctx.currentTime;
+    notes.forEach(function (note, index) {
+      const when = now + index * leadInterval;
+      createOsc("triangle", note, 0.018, audioState.bgmGain, when, 0.02, 0.16, 0.34);
+      createOsc("sine", note * 2, 0.006, audioState.bgmGain, when, 0.02, 0.12, 0.22);
+    });
+  }
+
+  function scheduleBass() {
+    const now = ctx.currentTime;
+    bass.forEach(function (note, index) {
+      const when = now + index * bassInterval;
+      createOsc("sine", note, 0.02, audioState.bgmGain, when, 0.02, 0.24, 0.7);
+    });
+  }
+
+  scheduleLead();
+  scheduleBass();
+  window.setInterval(scheduleLead, notes.length * leadInterval * 1000);
+  window.setInterval(scheduleBass, bass.length * bassInterval * 1000);
+}
+
+function startMusicLayer() {
+  const ctx = ensureAudioContext();
+  if (!ctx || !audioState.bgmGain) return;
+
+  const notes = [261.63, 329.63, 392.0, 329.63];
+  const interval = 0.42;
+
+  function pulse() {
+    const now = ctx.currentTime;
+
+    notes.forEach(function (note, index) {
+      const when = now + index * interval;
+      createOsc("triangle", note, 0.018, audioState.bgmGain, when, 0.02, 0.16, 0.34);
+      createOsc("sine", note * 2, 0.006, audioState.bgmGain, when, 0.02, 0.12, 0.22);
+    });
+  }
+
+  pulse();
+  window.setInterval(pulse, 1600);
+}
+
+function startSpecialBgmLayer() {
+  const ctx = ensureAudioContext();
+  if (!ctx || !audioState.specialBgmGain) return;
+  const notes = [523.25, 659.25, 783.99, 659.25];
+  const interval = 0.25;
+
+  function pulse() {
+    const now = ctx.currentTime;
+
+    if (state && state.now < audioState.specialUntil) {
+      audioState.specialBgmGain.gain.cancelScheduledValues(now);
+      audioState.specialBgmGain.gain.setTargetAtTime(0.16, now, 0.08);
+
+      notes.forEach(function (note, index) {
+        const when = now + index * interval;
+        createOsc("sawtooth", note, 0.012, audioState.specialBgmGain, when, 0.01, 0.12, 0.18);
+      });
+    } else {
+      audioState.specialBgmGain.gain.cancelScheduledValues(now);
+      audioState.specialBgmGain.gain.setTargetAtTime(0.0001, now, 0.12);
+    }
+  }
+
+  audioState.specialPulseTimer = window.setInterval(pulse, 700);
+}
+
+function triggerSpecialBgm(duration) {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  audioState.specialUntil = Math.max(audioState.specialUntil, state.now + duration);
+}
 
 const refs = {
   appShell: document.getElementById("appShell"),
@@ -379,6 +703,7 @@ function createInitialState() {
     introTimer: 0,
     intermissionTimer: 0,
     waveElapsed: 0,
+    lastCountdownValue: null,
     currentWaveIndex: -1,
     selectedStart: { characterId: null, towerId: null },
     selectedPlacement: null,
@@ -406,7 +731,7 @@ function createInitialState() {
 }
 
 function init() {
-    // 画像プリロード
+  // 画像プリロード
   const preloadImages = [];
   [...characters, ...towers, ...relics].forEach(function(def) {
     if (def.imageUrl && def.imageUrl !== "") {
@@ -420,7 +745,10 @@ function init() {
       preloadImages.push(img);
     }
   });
+
   bindStaticEvents();
+  initAudioUnlock();
+
   renderRoute();
   renderSlots();
   renderStartSelection();
@@ -431,8 +759,10 @@ function init() {
   renderSelectionPanel();
   updatePlaybackControls();
   updateHud();
+
   window.addEventListener("resize", fitBoardToFrame);
   window.requestAnimationFrame(gameLoop);
+
   setTimeout(function() {
     fitBoardToFrame();
     setTimeout(fitBoardToFrame, 200);
@@ -524,6 +854,13 @@ function updateStartSummary() {
 }
 
 function startRun() {
+  ensureAudioContext();
+  if (!audioState.started) {
+    startMainBgm();
+    startSpecialBgmLayer();
+    audioState.started = true;
+  }
+
   if (!state.selectedStart.characterId || !state.selectedStart.towerId) {
     return;
   }
@@ -596,15 +933,14 @@ function prepareStage(stageIndex) {
 
 function beginBattleFromDeploy() {
   const stage = stages[state.stageIndex];
-  if (state.status !== "deploy" || !stage || !hasPlacedStarterLoadout()) {
-    return;
-  }
+  if (state.status !== "deploy" || !stage || !hasPlacedStarterLoadout()) return;
 
   state.status = "battle";
   state.phase = "intro";
   state.paused = false;
   state.introTimer = Math.min(3, stage.introDelay || 3);
-  refs.countdownDisplay.textContent = "開演まで " + String(Math.ceil(state.introTimer));
+  state.lastCountdownValue = null;
+  refs.countdownDisplay.textContent = String(Math.ceil(state.introTimer));
   refs.selectionReadout.textContent = state.selectedPlacement
     ? ((state.selectedPlacement.kind === "character" ? characterMap.get(state.selectedPlacement.id).name : towerMap.get(state.selectedPlacement.id).name) + " を選択中。必要なら残りユニットもそのまま配置できます。")
     : "開演カウント中。必要なら残りユニットもそのまま配置できます。";
@@ -856,6 +1192,7 @@ function onSlotClick(slotId) {
   };
   unit.element = createUnitElement(unit);
   state.units.push(unit);
+  playPlacementSe();
   refs.unitLayer.appendChild(unit.element);
   state.selectedPlacement = null;
   autoSelectNextPlacement(def.name + " を配置しました。");
@@ -949,39 +1286,59 @@ function updateBattle(dt) {
 
   if (state.phase === "intro") {
     state.introTimer -= dt;
-    refs.countdownDisplay.textContent = state.introTimer > 0 ? ("開演まで " + String(Math.ceil(state.introTimer))) : "Wave Start";
+
+    const countdownValue = state.introTimer > 0 ? Math.ceil(state.introTimer) : 0;
+    refs.countdownDisplay.textContent = countdownValue > 0 ? String(countdownValue) : "Wave Start";
+
+    if (countdownValue > 0 && state.lastCountdownValue !== countdownValue) {
+      playCountdownSe(countdownValue);
+      state.lastCountdownValue = countdownValue;
+    }
+
     if (state.introTimer <= 0) {
+      state.lastCountdownValue = null;
       startWave(0);
     }
   } else if (state.phase === "intermission") {
     state.intermissionTimer -= dt;
-    refs.countdownDisplay.textContent = "次WAVEまで " + String(Math.max(1, Math.ceil(state.intermissionTimer)));
+
+    const countdownValue = state.intermissionTimer > 0 ? Math.ceil(state.intermissionTimer) : 0;
+    refs.countdownDisplay.textContent = countdownValue > 0 ? "WAVE " + String(countdownValue) : "Wave Start";
+
+    if (countdownValue > 0 && state.lastCountdownValue !== countdownValue) {
+      playCountdownSe(countdownValue);
+      state.lastCountdownValue = countdownValue;
+    }
+
     if (state.intermissionTimer <= 0) {
+      state.lastCountdownValue = null;
       startWave(state.currentWaveIndex + 1);
     }
   } else if (state.phase === "wave") {
     refs.countdownDisplay.textContent = "配信中";
     state.waveElapsed += dt;
     spawnScheduledEnemies();
-  }
+    updateWarnings();
+    updateEnemies(dt);
+    updateUnits(dt);
+    updateProjectiles(dt);
+    cleanupDeadEnemies();
+    refreshUnitStates();
+    updateHud();
 
-  updateWarnings();
-  updateEnemies(dt);
-  updateUnits(dt);
-  updateProjectiles(dt);
-  cleanupDeadEnemies();
-  refreshUnitStates();
-  updateHud();
-  updateBuffGlow();
-  if (Math.random() > 0.6) { spawnAuraParticles(); }
+    if (Math.random() < 0.6) {
+      spawnAuraParticles();
+    }
 
-  if (state.phase === "wave" && state.currentWaveSpawns.length === 0 && state.enemies.length === 0) {
-    if (state.currentWaveIndex >= stage.waves.length - 1) {
-      onStageClear();
-    } else {
-      state.phase = "intermission";
-      state.intermissionTimer = stage.intermission;
-      showStageBanner("WAVE " + String(state.currentWaveIndex + 1) + " CLEAR", "次の便りが近づいています");
+    if (state.phase === "wave" && state.currentWaveSpawns.length === 0 && state.enemies.length === 0) {
+      if (state.currentWaveIndex >= stage.waves.length - 1) {
+        onStageClear();
+      } else {
+        state.phase = "intermission";
+        state.intermissionTimer = stage.intermission;
+        state.lastCountdownValue = null;
+        showStageBanner("WAVE " + String(state.currentWaveIndex + 1) + " CLEAR", "...");
+      }
     }
   }
 }
@@ -989,11 +1346,15 @@ function updateBattle(dt) {
 function startWave(waveIndex) {
   const stage = stages[state.stageIndex];
   const wave = stage.waves[waveIndex];
+
   state.phase = "wave";
   state.currentWaveIndex = waveIndex;
   state.waveElapsed = 0;
   state.currentWaveSpawns = buildWaveSpawnQueue(wave);
-  refs.metricWave.textContent = String(waveIndex + 1) + " / " + String(stage.waves.length);
+
+  refs.metricWave.textContent =
+    String(waveIndex + 1) + "/" + String(stage.waves.length);
+
   showStageBanner("WAVE " + String(waveIndex + 1), wave.label);
 }
 
@@ -1020,6 +1381,7 @@ function spawnScheduledEnemies() {
 
 function spawnEnemy(enemyId, family, startDistance) {
   const def = family === "elite" ? eliteEnemyMap.get(enemyId) : family === "boss" ? bossMap.get(enemyId) : normalEnemyMap.get(enemyId);
+  if (!def) return;
   const stage = stages[state.stageIndex];
   const position = getPathPosition(startDistance || 0);
   const enemy = {
@@ -1208,9 +1570,11 @@ function updateProjectiles(dt) {
 }
 
 function fireFromUnit(unit, target, stats) {
+  playShotSe(unit, stats);
   const def = unit.kind === "character" ? characterMap.get(unit.defId) : towerMap.get(unit.defId);
   const palette = getFxPalette(def.iconKey);
   flashUnit(unit);
+  playShotSe(unit, stats);
   spawnTrail(unit.x, unit.y, target.x, target.y, palette, stats.heavy);
 
   const projectile = {
@@ -1258,9 +1622,6 @@ function damageEnemy(enemy, baseDamage, payload) {
   let damage = baseDamage;
   if (payload.damageVsSlowed > 0 && getSlowAmount(enemy) > 0) {
     damage *= 1 + payload.damageVsSlowed;
-  }
-  if (state.globalBuffs.scriptRewriteUntil > state.now) {
-    damage *= 1.35;
   }
   if (relicProfile.damageVsSlowed > 0 && getSlowAmount(enemy) > 0) {
     damage *= 1 + relicProfile.damageVsSlowed;
@@ -1311,15 +1672,16 @@ function damageEnemy(enemy, baseDamage, payload) {
 }
 
 function killEnemy(enemy) {
+  playEnemyDownSe(enemy);
   enemy.dead = true;
+  playEnemyDownSe(enemy);
   enemy.element.remove();
   spawnImpact(enemy.x, enemy.y, enemy.isBoss ? 160 : enemy.family === "elite" ? 78 : 48);
   registerChainKill();
-  // 吹き飛び演出（種別ごと）
   spawnEnemyBlast(enemy);
   if (enemy.splitCount > 0) {
     for (let i = 0; i < enemy.splitCount; i += 1) {
-      spawnEnemy("gummy_runner", "normal", enemy.distance - 8 + i * 10);
+      spawnEnemy("gummyrunner", "normal", enemy.distance - 8 + i * 10);
     }
   }
 }
@@ -1376,12 +1738,21 @@ function cleanupDeadEnemies() {
 }
 
 function refreshUnitStates() {
+  const towerBuffActive =
+    state.globalBuffs.scriptRewriteUntil > state.now ||
+    state.globalBuffs.encoreRushUntil > state.now ||
+    state.globalBuffs.sugarOrchestraUntil > state.now;
+
   state.units.forEach(function (unit) {
     unit.element.classList.toggle("disabled", unit.disabledUntil > state.now);
+    if (unit.kind === "tower") {
+      unit.element.classList.toggle("gold-buff", towerBuffActive);
+    }
   });
 }
 
 function onStageClear() {
+  playStageClearSe();
   state.stageHistory.push(stages[state.stageIndex].id);
   if (state.stageIndex >= stages.length - 1) {
     openEndOverlay(true);
@@ -1454,16 +1825,19 @@ function updateRewardSummary() {
 
 function confirmRewardSelections() {
   const selected = state.rewardState.selected;
-  if (!(selected.relicId && selected.characterId && selected.towerId)) {
-    return;
-  }
+  if (!selected.relicId || !selected.characterId || !selected.towerId) return;
+
+  playRewardSelectSe();
+
   if (state.collection.relicIds.indexOf(selected.relicId) < 0) {
     state.collection.relicIds.push(selected.relicId);
   }
   if (state.collection.characterIds.indexOf(selected.characterId) < 0) {
     state.collection.characterIds.push(selected.characterId);
   }
-  state.collection.towerStocks[selected.towerId] = (state.collection.towerStocks[selected.towerId] || 0) + 2;
+  state.collection.towerStocks[selected.towerId] =
+    (state.collection.towerStocks[selected.towerId] || 0) + 2;
+
   refs.rewardOverlay.classList.remove("overlay-visible");
   refs.rewardOverlay.classList.add("overlay-hidden");
   renderRelics();
@@ -1502,9 +1876,10 @@ function useCharacterSkill(characterId) {
   }
     const def = characterMap.get(characterId);
   state.skillCharges[characterId] -= 1;
+  playSkillSe();
   // キャラ登場演出を先に呼ぶ
   const placedChar = findPlacedCharacter(characterId);
-  const buffDur = def.skill.id === "encore_rush" ? 7 : 8;
+  const buffDur = def.skill.id === "encorerush" ? 7 : 8;
   if (placedChar) { showCharacterEntrance(def.iconKey, placedChar, buffDur / (state.gameSpeed || 1)); }
   showCutin(
   def.name,
@@ -1515,29 +1890,42 @@ function useCharacterSkill(characterId) {
   shakeBoard(1.1);
   
   if (def.skill.id === "dream_curtain") {
-    state.globalBuffs.globalSlowUntil = state.now + 8;
-    state.globalBuffs.globalSlowAmount = 0.35;
-    state.enemies.forEach(function (enemy) {
-      addSlow(enemy, 0.35, 8);
-      damageEnemy(enemy, 22, { slow: 0, critChance: 0, critMultiplier: 1, damageVsSlowed: 0, chainBonusPerKill: 0 });
+  state.globalBuffs.globalSlowUntil = state.now + 8;
+  state.globalBuffs.globalSlowAmount = 0.35;
+  state.enemies.forEach(function (enemy) {
+    addSlow(enemy, 0.35, 8);
+    damageEnemy(enemy, 22, {
+      slow: 0,
+      critChance: 0,
+      critMultiplier: 1,
+      damageVsSlowed: 0,
+      chainBonusPerKill: 0
     });
-  } else if (def.skill.id === "script_rewrite") {
-    state.globalBuffs.scriptRewriteUntil = state.now + 8;
-    triggerBuffGlow(); // ← 追加
-  } else if (def.skill.id === "encore_rush") {
-    state.globalBuffs.encoreRushUntil = state.now + 7;
-    triggerBuffGlow(); // ← 追加
-  } else if (def.skill.id === "sugar_orchestra") {
-    state.globalBuffs.sugarOrchestraUntil = state.now + 8;
-    triggerBuffGlow(); // ← 追加
-  } else if (def.skill.id === "moderation_wall") {
-    state.globalBuffs.reverseUntil = state.now + 3.8;
-  } else if (def.skill.id === "viral_splice") {
-    state.enemies.slice().forEach(function (enemy) {
-      damageEnemy(enemy, 54, { slow: 0, critChance: 0.16, critMultiplier: 1.9, damageVsSlowed: 0, chainBonusPerKill: 0 });
+  });
+} else if (def.skill.id === "script_rewrite") {
+  state.globalBuffs.scriptRewriteUntil = state.now + 8;
+  triggerBuffGlow(8);
+} else if (def.skill.id === "encore_rush") {
+  state.globalBuffs.encoreRushUntil = state.now + 7;
+  triggerBuffGlow(7);
+} else if (def.skill.id === "sugar_orchestra") {
+  state.globalBuffs.sugarOrchestraUntil = state.now + 8;
+  triggerBuffGlow(8);
+} else if (def.skill.id === "moderation_wall") {
+  state.globalBuffs.reverseUntil = state.now + 3.8;
+} else if (def.skill.id === "viral_splice") {
+  state.enemies.slice().forEach(function (enemy) {
+    damageEnemy(enemy, 54, {
+      slow: 0,
+      critChance: 0.16,
+      critMultiplier: 1.9,
+      damageVsSlowed: 0,
+      chainBonusPerKill: 0
     });
-  }
-  renderSkills();
+  });
+}
+renderSkills();
+updateHud();
 }
 
 function useRelicSkill(skillId) {
@@ -1549,9 +1937,12 @@ function useRelicSkill(skillId) {
 
   state.skillCharges[skillId] -= 1;
 
-const dreamRelic = relicMap.get("clip_storm");
+  playSkillSe();
 
-showDreamAttack();
+  const dreamRelic = relicMap.get("clipstorm");
+
+  showDreamAttack();
+  showCutin("", activeSkill ? activeSkill.name : (dreamRelic ? dreamRelic.name : ""), "trend");
 
   shakeBoard(1.5);
 
@@ -1930,6 +2321,10 @@ function getRemainingEnemyCount() {
 }
 
 function openEndOverlay(victory) {
+  if (!victory) {
+    playGameOverSe();
+  }
+
   state.status = victory ? "victory" : "gameover";
   state.paused = false;
   refs.endKicker.textContent = victory ? "Show Complete" : "Run Result";
@@ -1953,9 +2348,9 @@ function openEndOverlay(victory) {
 }
 
 function onEnemyGoal() {
-  if (state.status === "battle") {
-    openEndOverlay(false);
-  }
+  if (state.status !== "battle") return;
+  playGameOverSe();
+  openEndOverlay(false);
 }
 
 function restartRun() {
@@ -2171,32 +2566,41 @@ function getCombatStats(unit) {
   let jamResist = 0;
 
   if (unit.kind === "tower") {
-    damage *= 1 + (stageBoost.towerDamageBonus || 0);
-    cooldown /= 1 + (stageBoost.towerSpeedBonus || 0);
-    damage *= 1 + relicProfile.towerDamageBonus;
-    cooldown /= 1 + relicProfile.towerSpeedBonus;
-    range *= 1 + relicProfile.towerRangeBonus;
-    crit += relicProfile.towerCritBonus;
-    splash += relicProfile.splashBonus;
-    slow += relicProfile.slowPowerBonus * slow;
-    getAffectingCharacters(unit).forEach(function (characterUnit) {
-      const aura = characterMap.get(characterUnit.defId).aura.buffs;
-      damage *= 1 + (aura.damageBonus || 0);
-      cooldown /= 1 + (aura.speedBonus || 0);
-      range += aura.rangeAdd || 0;
-      crit += aura.critAdd || 0;
-      critMultiplier += aura.critDamageBonus || 0;
-      slow += aura.slowAdd || 0;
-      jamResist += aura.jamResist || 0;
-    });
-    if (state.globalBuffs.encoreRushUntil > state.now) {
-      cooldown *= 0.62;
-    }
-    if (state.globalBuffs.sugarOrchestraUntil > state.now) {
-      range += 20;
-      splash += 18;
-    }
-  } else {
+  damage *= 1 + (stageBoost.towerDamageBonus || 0);
+  cooldown *= 1 - (stageBoost.towerSpeedBonus || 0);
+  damage *= 1 + relicProfile.towerDamageBonus;
+  cooldown *= 1 - relicProfile.towerSpeedBonus;
+  range *= 1 + relicProfile.towerRangeBonus;
+  crit += relicProfile.towerCritBonus;
+  splash += relicProfile.splashBonus;
+  slow += relicProfile.slowPowerBonus;
+
+  getAffectingCharacters(unit).forEach(function (characterUnit) {
+    const aura = characterMap.get(characterUnit.defId).aura.buffs;
+    damage *= 1 + (aura.damageBonus || 0);
+    cooldown *= 1 - (aura.speedBonus || 0);
+    range += aura.rangeAdd || 0;
+    crit += aura.critAdd || 0;
+    critMultiplier += aura.critDamageBonus || 0;
+    slow += aura.slowAdd || 0;
+    jamResist += aura.jamResist || 0;
+  });
+
+  if (state.globalBuffs.scriptRewriteUntil > state.now) {
+    damage *= 1.35;
+  }
+
+  if (state.globalBuffs.encoreRushUntil > state.now) {
+    cooldown *= 0.62;
+  }
+
+  if (state.globalBuffs.sugarOrchestraUntil > state.now) {
+    damage *= 1.2;
+    range += 28;
+    crit += 0.12;
+    splash += 18;
+  }
+}else {
     damage *= 1 + (stageBoost.characterDamageBonus || 0);
     damage *= 1 + relicProfile.characterDamageBonus;
   }
@@ -2702,6 +3106,176 @@ function createIdMap(list) {
   const map = new Map();
   list.forEach(function (item) { map.set(item.id, item); });
   return map;
+}
+
+function initAudioUnlock() {
+  function unlock() {
+    ensureAudioContext();
+    window.removeEventListener("pointerdown", unlock);
+    window.removeEventListener("keydown", unlock);
+    window.removeEventListener("touchstart", unlock);
+  }
+
+  window.addEventListener("pointerdown", unlock, { passive: true });
+  window.addEventListener("keydown", unlock, { passive: true });
+  window.addEventListener("touchstart", unlock, { passive: true });
+}
+
+function createTone(freq, startTime, duration, options) {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+
+  const opts = options || {};
+  const type = opts.type || "sine";
+  const volume = opts.volume == null ? 0.12 : opts.volume;
+  const attack = opts.attack == null ? 0.005 : opts.attack;
+  const release = opts.release == null ? 0.08 : opts.release;
+  const detune = opts.detune || 0;
+  const destination =
+    opts.destination && typeof opts.destination.connect === "function"
+      ? opts.destination
+      : audioState.sfx;
+
+  if (!destination) return;
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+
+  filter.type = opts.filterType || "lowpass";
+  filter.frequency.value = opts.filterFrequency || 2400;
+  filter.Q.value = opts.filterQ || 0.0001;
+
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, startTime);
+  osc.detune.setValueAtTime(detune, startTime);
+
+  gain.gain.setValueAtTime(0.0001, startTime);
+  gain.gain.linearRampToValueAtTime(volume, startTime + attack);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration + release);
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(destination);
+
+  osc.start(startTime);
+  osc.stop(startTime + duration + release + 0.02);
+}
+
+function playCountdownSe(count) {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const freq = count <= 1 ? 1046.5 : count === 2 ? 880 : 659.25;
+
+  createTone(freq, now, 0.08, {
+    type: "square",
+    volume: 0.09,
+    filterFrequency: 2200
+  });
+
+  createTone(freq * 2, now + 0.012, 0.05, {
+    type: "triangle",
+    volume: 0.045,
+    filterFrequency: 3200
+  });
+}
+
+function playStageClearSe() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  createTone(523.25, now, 0.08, { type: "triangle", volume: 0.08 });
+  createTone(659.25, now + 0.08, 0.08, { type: "triangle", volume: 0.08 });
+  createTone(783.99, now + 0.16, 0.1, { type: "triangle", volume: 0.08 });
+  createTone(1046.5, now + 0.28, 0.24, { type: "sine", volume: 0.09 });
+}
+
+function playRewardSelectSe() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  createTone(698.46, now, 0.05, { type: "square", volume: 0.07 });
+  createTone(880, now + 0.045, 0.06, { type: "square", volume: 0.07 });
+  createTone(1174.66, now + 0.09, 0.14, { type: "triangle", volume: 0.06 });
+}
+
+function stopSpecialBgm() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+
+  if (audioState.specialGain) {
+    const now = ctx.currentTime;
+    audioState.specialGain.gain.cancelScheduledValues(now);
+    audioState.specialGain.gain.setValueAtTime(audioState.specialGain.gain.value, now);
+    audioState.specialGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+  }
+
+  audioState.specialOscillators.forEach(function (osc) {
+    try {
+      osc.stop(ctx.currentTime + 0.4);
+    } catch (error) {}
+  });
+
+  audioState.specialOscillators = [];
+  audioState.specialGain = null;
+}
+
+function triggerSpecialBgm(duration) {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+
+  stopSpecialBgm();
+
+  const now = ctx.currentTime;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.linearRampToValueAtTime(0.055, now + 0.2);
+  gain.gain.setValueAtTime(0.055, now + Math.max(0.2, duration - 0.5));
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+  gain.connect(audioState.musicBus);
+  audioState.specialGain = gain;
+  audioState.specialOscillators = [];
+
+  const notes = [261.63, 329.63, 392, 523.25];
+  notes.forEach(function (freq, index) {
+    const osc = ctx.createOscillator();
+    const oscGain = ctx.createGain();
+
+    osc.type = index % 2 === 0 ? "sine" : "triangle";
+    osc.frequency.setValueAtTime(freq, now);
+    osc.detune.setValueAtTime(index * 3, now);
+
+    oscGain.gain.value = index === 0 ? 0.5 : 0.22;
+
+    osc.connect(oscGain);
+    oscGain.connect(gain);
+
+    osc.start(now);
+    osc.stop(now + duration + 0.4);
+
+    audioState.specialOscillators.push(osc);
+  });
+
+  window.setTimeout(function () {
+    stopSpecialBgm();
+  }, Math.ceil(duration * 1000));
+}
+
+function playPlacementSe() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  createTone(523.25, now, 0.04, { type: "square", volume: 0.045, filterFrequency: 2200 });
+  createTone(783.99, now + 0.025, 0.06, { type: "triangle", volume: 0.03, filterFrequency: 2600 });
 }
 
 function buildPathMetrics(points) {

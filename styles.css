@@ -2780,3 +2780,20 @@ body {
   100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
 }
 
+.unit.tower.gold-buff {
+  box-shadow:
+    0 0 0 2px rgba(255, 214, 107, 0.42),
+    0 0 18px rgba(255, 214, 107, 0.34),
+    0 0 34px rgba(255, 160, 72, 0.24);
+  filter: brightness(1.08) saturate(1.12);
+  animation: towerBuffPulse 1s ease-in-out infinite;
+}
+
+@keyframes towerBuffPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}

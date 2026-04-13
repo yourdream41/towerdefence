@@ -19,6 +19,48 @@ const PATH_POINTS = [
   { x: 934, y: 548 }
 ];
 
+function buildPathMetrics(points) {
+  const segments = [];
+  let totalLength = 0;
+
+  for (let i = 1; i < points.length; i += 1) {
+    const from = points[i - 1];
+    const to = points[i];
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const length = Math.sqrt(dx * dx + dy * dy);
+
+    segments.push({
+      from: from,
+      to: to,
+      dx: dx,
+      dy: dy,
+      length: length,
+      start: totalLength,
+      end: totalLength + length
+    });
+
+    totalLength += length;
+  }
+
+  return {
+    segments: segments,
+    totalLength: totalLength
+  };
+}
+
+function createIdMap(list) {
+  const map = new Map();
+
+  list.forEach(function (item) {
+    if (item && item.id != null) {
+      map.set(item.id, item);
+    }
+  });
+
+  return map;
+}
+
 const PLACEMENT_SLOTS = [
   { id: "s1", x: 80, y: 70, zone: "front" },
   { id: "s2", x: 168, y: 70, zone: "front" },
@@ -192,7 +234,27 @@ const relics = [
   { id: "prop_rack", name: "ゲストはこちら", description: "次回以降の報酬候補数 +1。", spriteName: "relic-rack", cssClass: "relic-rack", iconKey: "rack", imageUrl: "images/relic/relic10.png", rarity: "rare", tags: ["studio"], modifiers: { rewardBonusChoices: 1 } },
   { id: "dream_loop", name: "フォエバードリーム", description: "スロウ中の敵に毎秒追加ダメージ。", spriteName: "relic-loop", cssClass: "relic-loop", iconKey: "loop", imageUrl: "images/relic/relic11.png", rarity: "epic", tags: ["dream"], modifiers: { slowDot: 5 } },
   { id: "sugar_battery", name: "爆発落ちなんてサイテー！", description: "爆発半径が拡大し、範囲塔の制圧力が伸びる。", spriteName: "relic-battery", cssClass: "relic-battery", iconKey: "battery", imageUrl: "images/relic/relic12.png", rarity: "rare", tags: ["candy"], modifiers: { splashBonus: 16 } },
-  { id: "clip_storm", name: "コラボ配信！", description: "強力な全体攻撃スキル『ドリームアタック！』を解禁。", spriteName: "relic-trend", cssClass: "relic-trend", iconKey: "trend", imageUrl: "images/relic/relic13.png", rarity: "legendary", tags: ["studio"], modifiers: { activeSkill: { id: "spark_rain", name: "ドリームアタック！", description: "全敵に大ダメージ。ステージごとに1回使用可能。", chargesPerStage: 1 } } }
+{ 
+  id: "clipstorm",
+  name: "コラボ配信！",
+  description: "強力な全体攻撃スキル『ドリームアタック！』を解禁。",
+  spriteName: "relic-trend",
+  cssClass: "relic-trend",
+  iconKey: "trend",
+  imageUrl: "images/relic/dreamattack01.png",
+  cutinImageUrl: "images/relic/dreamattack02.png",
+  rarity: "legendary",
+  tags: ["studio"],
+  modifiers: {
+    activeSkill: {
+      id: "sparkrain",
+      name: "ドリームアタック！",
+      description: "全敵に大ダメージ。ステージごとに1回使用可能。",
+      chargesPerStage: 1,
+      imageUrl: "dreamattack02.png"
+    }
+  }
+}
 ];
 
 const enemies = [
@@ -636,18 +698,25 @@ function renderSkills() {
     const placed = !!findPlacedCharacter(characterId);
     const ready = charges > 0 && placed && state.status === "battle";
     const button = document.createElement("button");
+
     button.type = "button";
-    button.className = "skill-button" + (ready ? " ready" : "") + (charges <= 0 ? " used" : !placed ? " disabled" : "");
+    button.className =
+      "skill-button" +
+      (ready ? " ready" : "") +
+      (charges <= 0 ? " used" : (!placed ? " disabled" : ""));
+
     button.innerHTML = [
       '<span class="skill-icon">', iconImg(def), "</span>",
       '<span class="skill-name">', def.skill.name, "</span>",
       '<span class="charges">', placed ? ("残り " + String(charges)) : "未配置", "</span>"
     ].join("");
+
     if (ready) {
       button.addEventListener("click", function () {
         useCharacterSkill(characterId);
       });
     }
+
     bindTooltip(button, buildSkillTooltip(def));
     refs.skillBar.appendChild(button);
   });
@@ -656,19 +725,35 @@ function renderSkills() {
     const charges = state.skillCharges[activeSkill.id] || 0;
     const ready = charges > 0 && state.status === "battle";
     const button = document.createElement("button");
+
     button.type = "button";
-    button.className = "skill-button" + (ready ? " ready" : "") + (charges <= 0 ? " used" : "");
+    button.className =
+      "skill-button" +
+      (ready ? " ready" : "") +
+      (charges <= 0 ? " used" : "");
+
+    const relicDefForSkill = Array.from(relicMap.values()).find(function (r) {
+      return r.modifiers && r.modifiers.activeSkill && r.modifiers.activeSkill.id === activeSkill.id;
+    });
+
+    const skillIconHtml =
+      relicDefForSkill && relicDefForSkill.imageUrl && relicDefForSkill.imageUrl !== ""
+        ? '<img src="' + relicDefForSkill.imageUrl + '" style="width:100%;height:100%;object-fit:cover;" alt="">'
+        : iconSvg("trend");
+
     button.innerHTML = [
-      '<span class="skill-icon">', iconSvg("trend"), "</span>",
+      '<span class="skill-icon">', skillIconHtml, "</span>",
       '<span class="skill-name">', activeSkill.name, "</span>",
       '<span class="charges">残り ', String(charges), "</span>",
       '<span class="skill-meta"><span class="meta-chip">レリック技</span><span class="meta-chip">全体攻撃</span></span>'
     ].join("");
+
     if (ready) {
       button.addEventListener("click", function () {
         useRelicSkill(activeSkill.id);
       });
     }
+
     bindTooltip(button, activeSkill.description);
     refs.skillBar.appendChild(button);
   });
@@ -677,12 +762,15 @@ function renderSkills() {
 function renderRelics() {
   refs.relicBar.innerHTML = "";
   const relicProfile = getRelicProfile();
+
   state.collection.relicIds.forEach(function (relicId) {
     const def = relicMap.get(relicId);
     const active = relicProfile.activeSynergyIds.indexOf(def.tags[0]) >= 0;
     const element = document.createElement("div");
+
     element.className = "relic-entry " + def.rarity + (active ? " synergy-lit" : "");
     element.innerHTML = '<span class="relic-icon">' + iconImg(def) + "</span>";
+
     bindTooltip(element, buildRelicTooltip(def, active));
     refs.relicBar.appendChild(element);
   });
@@ -1418,7 +1506,12 @@ function useCharacterSkill(characterId) {
   const placedChar = findPlacedCharacter(characterId);
   const buffDur = def.skill.id === "encore_rush" ? 7 : 8;
   if (placedChar) { showCharacterEntrance(def.iconKey, placedChar, buffDur / (state.gameSpeed || 1)); }
-  showCutin(def.name, def.skill.name, def.iconKey);
+  showCutin(
+  def.name,
+  def.skill.name,
+  def.iconKey,
+  def.imageUrl || def.cutinImageUrl || ""
+  );
   shakeBoard(1.1);
   
   if (def.skill.id === "dream_curtain") {
@@ -1448,19 +1541,125 @@ function useCharacterSkill(characterId) {
 }
 
 function useRelicSkill(skillId) {
-  if ((state.skillCharges[skillId] || 0) <= 0) {
-    return;
-  }
+  if ((state.skillCharges[skillId] || 0) <= 0) return;
+
   const activeSkill = getRelicProfile().activeSkills.find(function (skill) {
     return skill.id === skillId;
   });
+
   state.skillCharges[skillId] -= 1;
-  showCutin("レリック", activeSkill ? activeSkill.name : "ドリームアタック！", "trend");
+
+const dreamRelic = relicMap.get("clip_storm");
+
+showDreamAttack();
+
   shakeBoard(1.5);
+
   state.enemies.slice().forEach(function (enemy) {
-    damageEnemy(enemy, 86, { slow: 0, critChance: 0.2, critMultiplier: 2, damageVsSlowed: 0, chainBonusPerKill: 0 });
+    damageEnemy(enemy, 86, {
+      slow: 0,
+      critChance: 0.2,
+      critMultiplier: 2,
+      damageVsSlowed: 0,
+      chainBonusPerKill: 0
+    });
   });
+
   renderSkills();
+}
+
+function showDreamAttack() {
+  const palette = { primary: "#79d7ff", secondary: "#ffd36b", glow: "rgba(121,215,255,0.6)" };
+
+  // 1. カットイン表示
+  showCutin("レリック", "ドリームアタック！", "trend");
+
+  // 2. 大きいキャラ画像を左に表示
+  const el = document.createElement("div");
+  el.className = "char-entrance dream-attack-entrance";
+  el.style.setProperty("--entrance-color", palette.primary);
+  el.style.setProperty("--entrance-glow", palette.glow);
+  el.innerHTML = '<img src="images/relic/dreamattack02.png" style="width:100%;height:100%;object-fit:contain;" alt="">';
+  el.style.left = "500px";
+  el.style.top = "310px";
+  el.style.transform = "translate(-50%,-50%) scale(2)";
+  el.style.opacity = "0";
+  refs.cutinLayer.appendChild(el);
+
+  // フェードイン
+  requestAnimationFrame(function() {
+    el.style.transition = "opacity 0.2s ease";
+    el.style.opacity = "1";
+  });
+
+  // 3. 画面フラッシュ連続
+  for (let i = 0; i < 4; i++) {
+    window.setTimeout(function() {
+      spawnSkillFlash({ primary: "#79d7ff", secondary: "#ffffff", glow: "rgba(121,215,255,0.8)" });
+    }, i * 300);
+  }
+
+  // 4. シェイク連続
+  for (let i = 0; i < 6; i++) {
+    window.setTimeout(function() {
+      shakeBoard(1.8);
+    }, i * 200);
+  }
+
+  // 5. 画面中央にDREAM ATTACKテキスト
+  window.setTimeout(function() {
+    const banner = document.createElement("div");
+    banner.className = "dream-attack-banner";
+    banner.textContent = "DREAM ATTACK!!";
+    refs.cutinLayer.appendChild(banner);
+    window.setTimeout(function() { banner.remove(); }, 2000);
+  }, 300);
+
+  // 6. 光の粒を大量に散乱
+  for (let i = 0; i < 40; i++) {
+    window.setTimeout(function() {
+      const shard = document.createElement("div");
+      shard.className = "dream-shard";
+      shard.style.left = String(Math.random() * 1000) + "px";
+      shard.style.top = String(Math.random() * 620) + "px";
+      const size = 4 + Math.random() * 12;
+      shard.style.width = String(size) + "px";
+      shard.style.height = String(size) + "px";
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 60 + Math.random() * 120;
+      shard.style.setProperty("--vx", String(Math.cos(angle) * speed) + "px");
+      shard.style.setProperty("--vy", String(Math.sin(angle) * speed) + "px");
+      refs.effectLayer.appendChild(shard);
+      window.setTimeout(function() { shard.remove(); }, 800);
+    }, Math.random() * 1500);
+  }
+
+  // 7. ガラスが砕けるエフェクト（1.5秒後）
+  window.setTimeout(function() {
+    el.classList.add("dream-shatter");
+    // 破片を生成
+    for (let i = 0; i < 16; i++) {
+      const piece = document.createElement("div");
+      piece.className = "shatter-piece";
+      piece.style.left = "500px";
+      piece.style.top = "310px";
+      const angle = (i / 16) * Math.PI * 2;
+      const speed = 80 + Math.random() * 160;
+      piece.style.setProperty("--vx", String(Math.cos(angle) * speed) + "px");
+      piece.style.setProperty("--vy", String(Math.sin(angle) * speed) + "px");
+      piece.style.setProperty("--rot", String(Math.random() * 720) + "deg");
+      piece.style.width = String(20 + Math.random() * 60) + "px";
+      piece.style.height = String(20 + Math.random() * 60) + "px";
+      piece.style.background = "rgba(121,215,255," + (0.4 + Math.random() * 0.5) + ")";
+      piece.style.boxShadow = "0 0 12px rgba(121,215,255,0.8)";
+      refs.effectLayer.appendChild(piece);
+      window.setTimeout(function() { piece.remove(); }, 1000);
+    }
+    // 元画像をフェードアウト
+    el.style.transition = "opacity 0.3s ease";
+    el.style.opacity = "0";
+    window.setTimeout(function() { el.remove(); }, 300);
+  }, 1800);
 }
 
 function updateHud() {
@@ -1533,7 +1732,7 @@ function cycleGameSpeed() {
   if (state.status !== "battle") {
     return;
   }
-  const speeds = [1, 2, 3, 5];
+  const speeds = [1, 2, 3, 5, 10];
   const currentIndex = speeds.indexOf(state.gameSpeed);
   state.gameSpeed = speeds[(currentIndex + 1) % speeds.length];
   updatePlaybackControls();
@@ -2329,7 +2528,7 @@ function showStageBanner(title, subtitle) {
   refs.stageBanner.classList.add("visible");
 }
 
-function showCutin(name, skillName, iconKey) {
+function showCutin(name, skillName, iconKey, imageUrl) {
   const palette = getFxPalette(iconKey);
   const cutin = document.createElement("div");
   cutin.className = "cutin visible";
@@ -2337,27 +2536,33 @@ function showCutin(name, skillName, iconKey) {
   cutin.style.setProperty("--cutin-sub", palette.secondary);
   cutin.style.setProperty("--cutin-glow", palette.glow);
 
-  // カットイン用画像を取得（cutinImageUrlがあれば使用）
-  const charDef = Array.from(characterMap.values()).find(function(c) { return c.iconKey === iconKey; });
-  const portraitHtml = charDef && charDef.imageUrl && charDef.imageUrl !== ""
-    ? '<img src="' + charDef.imageUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" alt="' + name + '">'
+  const portraitHtml = imageUrl
+    ? '<img class="cutin-image" src="' + imageUrl + '" alt="' + (skillName || name || "skill") + '">'
     : iconSvg(iconKey || "trend");
+
+  const portraitClass = imageUrl
+    ? "cutin-portrait cutin-portrait-full"
+    : "cutin-portrait";
 
   cutin.innerHTML = [
     '<span class="cutin-blade cutin-blade-a"></span>',
     '<span class="cutin-blade cutin-blade-b"></span>',
     '<span class="cutin-blade cutin-blade-c"></span>',
-    '<div class="cutin-portrait">', portraitHtml, "</div>",
+    '<div class="' + portraitClass + '">', portraitHtml, '</div>',
     '<div class="cutin-copy">',
-    '<span class="cutin-kicker">SHOWTIME SKILL</span>',
-    '<div class="cutin-title">', name, "</div>",
-    '<div class="cutin-skill">', skillName, "</div>",
-    "</div>",
-    '<div class="cutin-slash-text">', skillName, "</div>"
+      '<span class="cutin-kicker">SHOWTIME SKILL</span>',
+      '<div class="cutin-title">', name || "", '</div>',
+      '<div class="cutin-skill">', skillName || "", '</div>',
+    '</div>',
+    '<div class="cutin-slash-text">', skillName || "", '</div>'
   ].join("");
+
   spawnSkillFlash(palette);
   refs.cutinLayer.appendChild(cutin);
-  window.setTimeout(function () { cutin.remove(); }, 2200);
+
+  window.setTimeout(function () {
+    cutin.remove();
+  }, 2200);
 }
 
 function showCharacterEntrance(iconKey, characterUnit, buffDuration) {

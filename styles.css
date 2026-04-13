@@ -911,12 +911,21 @@ button {
   transform: translateY(-50%) skewX(-10deg);
   display: grid;
   place-items: center;
+  overflow: hidden;
   background:
     linear-gradient(140deg, rgba(255, 255, 255, 0.12), transparent 40%),
     linear-gradient(135deg, rgba(20, 16, 18, 0.96), rgba(30, 18, 16, 0.94));
   border: 1px solid rgba(255, 223, 167, 0.22);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 0 30px var(--cutin-glow, rgba(255, 178, 93, 0.22));
   z-index: 1;
+}
+
+.cutin-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: skewX(10deg) scale(1.06);
 }
 
 .cutin-portrait svg {
@@ -2726,3 +2735,48 @@ body {
     transform: translate(calc(-50% + var(--vx)), calc(-50% + var(--vy))) scale(0.2) rotate(var(--rot));
   }
 }
+
+.dream-attack-entrance {
+  z-index: 15;
+}
+
+.dream-attack-banner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  color: #ffffff;
+  text-shadow: 0 0 24px #79d7ff, 0 0 48px #79d7ff, 0 0 80px rgba(121,215,255,0.6);
+  animation: dreamBannerPop 2s ease forwards;
+  pointer-events: none;
+  z-index: 20;
+  white-space: nowrap;
+}
+
+.dream-shard {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff, #79d7ff 50%, transparent 80%);
+  box-shadow: 0 0 8px rgba(121,215,255,0.8);
+  pointer-events: none;
+  animation: shardBlast 0.8s ease-out forwards;
+}
+
+.shatter-piece {
+  position: absolute;
+  border-radius: 4px;
+  pointer-events: none;
+  animation: shardBlast 1s ease-out forwards;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes dreamBannerPop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  15% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+}
+

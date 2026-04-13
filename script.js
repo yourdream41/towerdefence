@@ -1310,6 +1310,12 @@ function updateBattle(dt) {
       state.lastCountdownValue = countdownValue;
     }
 
+    updateProjectiles(dt);
+    cleanupDeadEnemies();
+    updateUnits(dt);
+    refreshUnitStates();
+    updateHud();
+
     if (state.intermissionTimer <= 0) {
       state.lastCountdownValue = null;
       startWave(state.currentWaveIndex + 1);
@@ -2328,8 +2334,8 @@ function openEndOverlay(victory) {
   state.status = victory ? "victory" : "gameover";
   state.paused = false;
   refs.endKicker.textContent = victory ? "Show Complete" : "Run Result";
-  refs.endTitle.textContent = victory ? "ゲームクリア" : "ゲームオーバー";
-  refs.endMessage.textContent = victory ? "ステージ6のボスを撃破しました。配信は大成功です。" : "敵が1体でもゴールへ到達したため、配信失敗です。";
+  refs.endTitle.textContent = victory ? "ゲームクリア！おめでとう！" : "ゲームオーバー";
+  refs.endMessage.textContent = victory ? "ボスを撃破しました。配信は大成功だ！" : "敵がゴールへ到達したため、配信失敗です。";
   refs.endStageStat.textContent = String(victory ? 6 : state.stageIndex + 1) + " / 6";
   refs.endRelicList.innerHTML = "";
   refs.endCharacterList.innerHTML = "";

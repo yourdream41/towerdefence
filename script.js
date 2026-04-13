@@ -171,49 +171,48 @@ const characters = [
 ];
 
 const towers = [
-  { id: "mic_tower", name: "コメント弾幕砲", description: "標準的な単体火力。配信の芯を作る主砲。", spriteName: "tower-mic", cssClass: "tower-mic", iconKey: "mic_tower", imageUrl: "", stats: { damage: 24, range: 134, cooldown: 0.92, crit: 0.12, critMultiplier: 1.8, projectileSpeed: 470 }, abilities: ["single"] },
-  { id: "mixer_tower", name: "ポロロッカマシンガン", description: "高速で小粒の弾を連射。攻速バフと好相性。", spriteName: "tower-mixer", cssClass: "tower-mixer", iconKey: "mixer_tower", imageUrl: "", stats: { damage: 12, range: 118, cooldown: 0.38, crit: 0.06, critMultiplier: 1.65, projectileSpeed: 420 }, abilities: ["rapid"] },
-  { id: "comment_cannon", name: "コメント砲台", description: "広めの爆発でまとめて吹き飛ばす範囲砲台。", spriteName: "tower-comment", cssClass: "tower-comment", iconKey: "comment_cannon", imageUrl: "", stats: { damage: 38, range: 148, cooldown: 1.46, crit: 0.09, critMultiplier: 1.85, projectileSpeed: 330, splash: 46 }, abilities: ["splash"] },
-  { id: "candy_shooter", name: "キャンディシューター", description: "軽い減速付きの連射塔。序盤から終盤まで便利。", spriteName: "tower-candy", cssClass: "tower-candy", iconKey: "candy_shooter", imageUrl: "", stats: { damage: 9, range: 112, cooldown: 0.28, crit: 0.04, critMultiplier: 1.6, projectileSpeed: 450, slow: 0.08 }, abilities: ["rapid", "slow"] },
-  { id: "macaron_launcher", name: "マカロンランチャー", description: "重い一撃と大きな爆発。高難度での突破力担当。", spriteName: "tower-macaron", cssClass: "tower-macaron", iconKey: "macaron_launcher", imageUrl: "", stats: { damage: 60, range: 162, cooldown: 2.08, crit: 0.16, critMultiplier: 2.1, projectileSpeed: 290, splash: 64, heavy: true }, abilities: ["heavy", "splash"] },
-  { id: "signal_prism", name: "パフェフレークイヤダー", description: "高い会心率と範囲爆発を持つ上級塔。クリティカルを軸に火力を出す。", spriteName: "tower-prism", cssClass: "tower-prism", iconKey: "signal_prism", imageUrl: "", stats: { damage: 22, range: 144, cooldown: 0.74, crit: 0.18, critMultiplier: 1.95, projectileSpeed: 410, splash: 24 }, abilities: ["crit", "burst"] }
+  { id: "mic_tower", name: "コメント弾幕砲", description: "標準的な単体火力。配信の芯を作る主砲。", spriteName: "tower-mic", cssClass: "tower-mic", iconKey: "mic_tower", imageUrl: "images/towers/tower01.png", stats: { damage: 24, range: 134, cooldown: 0.92, crit: 0.12, critMultiplier: 1.8, projectileSpeed: 470 }, abilities: ["single"] },
+  { id: "mixer_tower", name: "ポロロッカマシンガン", description: "高速で小粒の弾を連射。攻速バフと好相性。", spriteName: "tower-mixer", cssClass: "tower-mixer", iconKey: "mixer_tower", imageUrl: "images/towers/tower02.png", stats: { damage: 12, range: 118, cooldown: 0.38, crit: 0.06, critMultiplier: 1.65, projectileSpeed: 420 }, abilities: ["rapid"] },
+  { id: "comment_cannon", name: "コメント砲台", description: "広めの爆発でまとめて吹き飛ばす範囲砲台。", spriteName: "tower-comment", cssClass: "tower-comment", iconKey: "comment_cannon", imageUrl: "images/towers/tower03.png", stats: { damage: 38, range: 148, cooldown: 1.46, crit: 0.09, critMultiplier: 1.85, projectileSpeed: 330, splash: 46 }, abilities: ["splash"] },
+  { id: "candy_shooter", name: "キャンディシューター", description: "軽い減速付きの連射塔。序盤から終盤まで便利。", spriteName: "tower-candy", cssClass: "tower-candy", iconKey: "candy_shooter", imageUrl: "images/towers/tower04.png", stats: { damage: 9, range: 112, cooldown: 0.28, crit: 0.04, critMultiplier: 1.6, projectileSpeed: 450, slow: 0.08 }, abilities: ["rapid", "slow"] },
+  { id: "macaron_launcher", name: "マカロンランチャー", description: "重い一撃と大きな爆発。高難度での突破力担当。", spriteName: "tower-macaron", cssClass: "tower-macaron", iconKey: "macaron_launcher", imageUrl: "images/towers/tower05.png", stats: { damage: 60, range: 162, cooldown: 2.08, crit: 0.16, critMultiplier: 2.1, projectileSpeed: 290, splash: 64, heavy: true }, abilities: ["heavy", "splash"] },
+  { id: "signal_prism", name: "パフェフレークイヤダー", description: "高い会心率と範囲爆発を持つ上級塔。クリティカルを軸に火力を出す。", spriteName: "tower-prism", cssClass: "tower-prism", iconKey: "signal_prism", imageUrl: "images/towers/tower06.png", stats: { damage: 22, range: 144, cooldown: 0.74, crit: 0.18, critMultiplier: 1.95, projectileSpeed: 410, splash: 24 }, abilities: ["crit", "burst"] }
 ];
 
 const relics = [
-  { id: "holy_comments", name: "神コメントログ", description: "全タワー攻撃力 +10%。", spriteName: "relic-comments", cssClass: "relic-comments", iconKey: "comment", imageUrl: "", rarity: "common", tags: ["studio"], modifiers: { towerDamageBonus: 0.1 } },
-  { id: "buzz_clip", name: "バズ切り抜き", description: "全タワー攻撃速度 +14%。", spriteName: "relic-clip", cssClass: "relic-clip", iconKey: "clip", imageUrl: "", rarity: "rare", tags: ["studio"], modifiers: { towerSpeedBonus: 0.14 } },
-  { id: "sugar_zoom", name: "ブレベミルク", description: "全タワー射程 +10%。", spriteName: "relic-zoom", cssClass: "relic-zoom", iconKey: "zoom", imageUrl: "", rarity: "common", tags: ["candy"], modifiers: { towerRangeBonus: 0.1 } },
-  { id: "syrup_dream", name: "夢シロップ", description: "スロウ効果がさらに強くなる。", spriteName: "relic-syrup", cssClass: "relic-syrup", iconKey: "dream", imageUrl: "", rarity: "rare", tags: ["dream"], modifiers: { slowPowerBonus: 0.25 } },
-  { id: "backstage_coffee", name: "ダブルストリーム", description: "各自キャラスキルの使用回数 +1。", spriteName: "relic-coffee", cssClass: "relic-coffee", iconKey: "coffee", imageUrl: "", rarity: "legendary", tags: ["studio"], modifiers: { skillChargeBonus: 1 } },
-  { id: "overload_fader", name: "ロングストリーム", description: "攻撃力 +30% だが射程 -10%。", spriteName: "relic-fader", cssClass: "relic-fader", iconKey: "overload", imageUrl: "", rarity: "epic", tags: ["studio"], modifiers: { towerDamageBonus: 0.3, towerRangeBonus: -0.1 } },
-  { id: "superchat_rain", name: "レインボースパチャ", description: "連鎖撃破に応じて追加火力が伸びる。", spriteName: "relic-rain", cssClass: "relic-rain", iconKey: "rain", imageUrl: "", rarity: "rare", tags: ["candy"], modifiers: { chainBonusPerKill: 0.03, chainWindowBonus: 0.8 } },
-  { id: "archive_sugar", name: "アーカイブコメント", description: "全タワー会心率 +8%。", spriteName: "relic-archive", cssClass: "relic-archive", iconKey: "archive", imageUrl: "", rarity: "common", tags: ["candy"], modifiers: { towerCritBonus: 0.08 } },
-  { id: "midnight_mixer", name: "神リプライ", description: "自キャラ攻撃力 +18%、タワー攻撃力 +8%。", spriteName: "relic-midnight", cssClass: "relic-midnight", iconKey: "mixer", imageUrl: "", rarity: "epic", tags: ["dream"], modifiers: { towerDamageBonus: 0.08, characterDamageBonus: 0.18 } },
-  { id: "prop_rack", name: "ライブチケット当選", description: "次回以降の報酬候補数 +1。", spriteName: "relic-rack", cssClass: "relic-rack", iconKey: "rack", imageUrl: "", rarity: "rare", tags: ["studio"], modifiers: { rewardBonusChoices: 1 } },
-  { id: "dream_loop", name: "フォエバードリーム", description: "スロウ中の敵に毎秒追加ダメージ。", spriteName: "relic-loop", cssClass: "relic-loop", iconKey: "loop", imageUrl: "", rarity: "epic", tags: ["dream"], modifiers: { slowDot: 5 } },
-  { id: "sugar_battery", name: "爆発落ちなんてサイテー！", description: "爆発半径が拡大し、範囲塔の制圧力が伸びる。", spriteName: "relic-battery", cssClass: "relic-battery", iconKey: "battery", imageUrl: "", rarity: "rare", tags: ["candy"], modifiers: { splashBonus: 16 } },
-  { id: "clip_storm", name: "コメント弾幕", description: "強力な全体攻撃スキル『ドリームアタック！』を解禁。", spriteName: "relic-trend", cssClass: "relic-trend", iconKey: "trend", imageUrl: "", rarity: "legendary", tags: ["studio"], modifiers: { activeSkill: { id: "spark_rain", name: "ドリームアタック！", description: "全敵に大ダメージ。ステージごとに1回使用可能。", chargesPerStage: 1 } } }
+  { id: "holy_comments", name: "神コメントログ", description: "全タワー攻撃力 +10%。", spriteName: "relic-comments", cssClass: "relic-comments", iconKey: "comment", imageUrl: "images/relic/relic01.png", rarity: "common", tags: ["studio"], modifiers: { towerDamageBonus: 0.1 } },
+  { id: "buzz_clip", name: "バズ切り抜き", description: "全タワー攻撃速度 +14%。", spriteName: "relic-clip", cssClass: "relic-clip", iconKey: "clip", imageUrl: "images/relic/relic02.png", rarity: "rare", tags: ["studio"], modifiers: { towerSpeedBonus: 0.14 } },
+  { id: "sugar_zoom", name: "ブレベミルク", description: "全タワー射程 +10%。", spriteName: "relic-zoom", cssClass: "relic-zoom", iconKey: "zoom", imageUrl: "images/relic/relic03.png", rarity: "common", tags: ["candy"], modifiers: { towerRangeBonus: 0.1 } },
+  { id: "syrup_dream", name: "夢シロップ", description: "スロウ効果がさらに強くなる。", spriteName: "relic-syrup", cssClass: "relic-syrup", iconKey: "dream", imageUrl: "images/relic/relic04.png", rarity: "rare", tags: ["dream"], modifiers: { slowPowerBonus: 0.25 } },
+  { id: "backstage_coffee", name: "ダブルストリーム", description: "各自キャラスキルの使用回数 +1。", spriteName: "relic-coffee", cssClass: "relic-coffee", iconKey: "coffee", imageUrl: "images/relic/relic05.png", rarity: "legendary", tags: ["studio"], modifiers: { skillChargeBonus: 1 } },
+  { id: "overload_fader", name: "ロングストリーム", description: "攻撃力 +30% だが射程 -10%。", spriteName: "relic-fader", cssClass: "relic-fader", iconKey: "overload", imageUrl: "images/relic/relic06.png", rarity: "epic", tags: ["studio"], modifiers: { towerDamageBonus: 0.3, towerRangeBonus: -0.1 } },
+  { id: "superchat_rain", name: "レインボースパチャ", description: "連鎖撃破に応じて追加火力が伸びる。", spriteName: "relic-rain", cssClass: "relic-rain", iconKey: "rain", imageUrl: "images/relic/relic07.png", rarity: "rare", tags: ["candy"], modifiers: { chainBonusPerKill: 0.03, chainWindowBonus: 0.8 } },
+  { id: "archive_sugar", name: "アーカイブコメント", description: "全タワー会心率 +8%。", spriteName: "relic-archive", cssClass: "relic-archive", iconKey: "archive", imageUrl: "images/relic/relic08.png", rarity: "common", tags: ["candy"], modifiers: { towerCritBonus: 0.08 } },
+  { id: "midnight_mixer", name: "神リプライ", description: "自キャラ攻撃力 +18%、タワー攻撃力 +8%。", spriteName: "relic-midnight", cssClass: "relic-midnight", iconKey: "mixer", imageUrl: "images/relic/relic09.png", rarity: "epic", tags: ["dream"], modifiers: { towerDamageBonus: 0.08, characterDamageBonus: 0.18 } },
+  { id: "prop_rack", name: "ライブチケット当選", description: "次回以降の報酬候補数 +1。", spriteName: "relic-rack", cssClass: "relic-rack", iconKey: "rack", imageUrl: "images/relic/relic10.png", rarity: "rare", tags: ["studio"], modifiers: { rewardBonusChoices: 1 } },
+  { id: "dream_loop", name: "フォエバードリーム", description: "スロウ中の敵に毎秒追加ダメージ。", spriteName: "relic-loop", cssClass: "relic-loop", iconKey: "loop", imageUrl: "images/relic/relic11.png", rarity: "epic", tags: ["dream"], modifiers: { slowDot: 5 } },
+  { id: "sugar_battery", name: "爆発落ちなんてサイテー！", description: "爆発半径が拡大し、範囲塔の制圧力が伸びる。", spriteName: "relic-battery", cssClass: "relic-battery", iconKey: "battery", imageUrl: "images/relic/relic12.png", rarity: "rare", tags: ["candy"], modifiers: { splashBonus: 16 } },
+  { id: "clip_storm", name: "コメント弾幕", description: "強力な全体攻撃スキル『ドリームアタック！』を解禁。", spriteName: "relic-trend", cssClass: "relic-trend", iconKey: "trend", imageUrl: "images/relic/relic13.png", rarity: "legendary", tags: ["studio"], modifiers: { activeSkill: { id: "spark_rain", name: "ドリームアタック！", description: "全敵に大ダメージ。ステージごとに1回使用可能。", chargesPerStage: 1 } } }
 ];
 
-// Add new normal enemies to this array to expand wave variety.
 const enemies = [
-  { id: "gummy_runner", name: "グミナッツ", spriteName: "enemy-gummy", iconKey: "enemy-speed", imageUrl: "", stats: { hp: 58, speed: 86, shield: 0, threat: 0.9 }, roleIcon: "»", roleText: "速い敵", abilities: [] },
-  { id: "chat_blob", name: "キャンディースパイシー", spriteName: "enemy-blob", iconKey: "enemy-blob", imageUrl: "", stats: { hp: 86, speed: 68, shield: 0, threat: 1 }, roleIcon: "◌", roleText: "通常敵", abilities: [] },
-  { id: "wafer_guard", name: "ワッフルソフト", spriteName: "enemy-wafer", iconKey: "enemy-shield", imageUrl: "", stats: { hp: 162, speed: 54, shield: 52, threat: 1.3 }, roleIcon: "▣", roleText: "硬い敵", abilities: ["shield"] },
-  { id: "noise_imp", name: "ワイファイヨワイ", spriteName: "enemy-noise", iconKey: "enemy-noise", imageUrl: "", stats: { hp: 96, speed: 70, shield: 0, threat: 1.2 }, roleIcon: "≈", roleText: "妨害敵", abilities: ["jamPulse"] },
-  { id: "pop_meringue", name: "メレンゲシットリ", spriteName: "enemy-pop", iconKey: "enemy-speed", imageUrl: "", stats: { hp: 52, speed: 104, shield: 0, threat: 1.05 }, roleIcon: "»", roleText: "速い敵", abilities: [] }
+  { id: "gummy_runner", name: "グミナッツ", spriteName: "enemy-gummy", iconKey: "enemy-speed", imageUrl: "images/enemy/enemy01.png", stats: { hp: 58, speed: 86, shield: 0, threat: 0.9 }, roleIcon: "»", roleText: "速い敵", abilities: [] },
+  { id: "chat_blob", name: "キャンディースパイシー", spriteName: "enemy-blob", iconKey: "enemy-blob", imageUrl: "images/enemy/enemy02.png", stats: { hp: 86, speed: 68, shield: 0, threat: 1 }, roleIcon: "◌", roleText: "通常敵", abilities: [] },
+  { id: "wafer_guard", name: "ワッフルソフト", spriteName: "enemy-wafer", iconKey: "enemy-shield", imageUrl: "images/enemy/enemy03.png", stats: { hp: 162, speed: 54, shield: 52, threat: 1.3 }, roleIcon: "▣", roleText: "硬い敵", abilities: ["shield"] },
+  { id: "noise_imp", name: "ワイファイヨワイ", spriteName: "enemy-noise", iconKey: "enemy-noise", imageUrl: "images/enemy/enemy04.png", stats: { hp: 96, speed: 70, shield: 0, threat: 1.2 }, roleIcon: "≈", roleText: "妨害敵", abilities: ["jamPulse"] },
+  { id: "pop_meringue", name: "メレンゲシットリ", spriteName: "enemy-pop", iconKey: "enemy-speed", imageUrl: "images/enemy/enemy05.png", stats: { hp: 52, speed: 104, shield: 0, threat: 1.05 }, roleIcon: "»", roleText: "速い敵", abilities: [] }
 ];
 
 const eliteEnemies = [
-  { id: "marsh_guard", name: "マシュマロナイト", spriteName: "elite-marsh", iconKey: "enemy-shield", imageUrl: "", stats: { hp: 260, speed: 72, shield: 120, threat: 2.1 }, roleIcon: "▣", roleText: "シールド", abilities: ["shield"], elite: true },
-  { id: "regen_puff", name: "シュガープリースト", spriteName: "elite-regen", iconKey: "enemy-regen", imageUrl: "", stats: { hp: 232, speed: 74, shield: 0, threat: 2 }, roleIcon: "+", roleText: "再生", abilities: ["regen"], elite: true },
-  { id: "rush_cycler", name: "ウォーターワタアメ", spriteName: "elite-rush", iconKey: "enemy-speed", imageUrl: "", stats: { hp: 180, speed: 122, shield: 0, threat: 2.15 }, roleIcon: "»", roleText: "高速", abilities: ["fast"], elite: true },
-  { id: "split_toffee", name: "カットアップアイス", spriteName: "elite-split", iconKey: "enemy-split", imageUrl: "", stats: { hp: 214, speed: 78, shield: 0, threat: 2.05 }, roleIcon: "◎", roleText: "分裂", abilities: ["split"], elite: true },
-  { id: "static_moth", name: "ウイスキーヨイ", spriteName: "elite-static", iconKey: "enemy-noise", imageUrl: "", stats: { hp: 246, speed: 82, shield: 0, threat: 2.3 }, roleIcon: "≈", roleText: "妨害", abilities: ["jamPulse"], elite: true }
+  { id: "marsh_guard", name: "マシュマロナイト", spriteName: "elite-marsh", iconKey: "enemy-shield", imageUrl: "images/enemy/enemy06.png", stats: { hp: 260, speed: 72, shield: 120, threat: 2.1 }, roleIcon: "▣", roleText: "シールド", abilities: ["shield"], elite: true },
+  { id: "regen_puff", name: "シュガープリースト", spriteName: "elite-regen", iconKey: "enemy-regen", imageUrl: "images/enemy/enemy07.png", stats: { hp: 232, speed: 74, shield: 0, threat: 2 }, roleIcon: "+", roleText: "再生", abilities: ["regen"], elite: true },
+  { id: "rush_cycler", name: "ウォーターワタアメ", spriteName: "elite-rush", iconKey: "enemy-speed", imageUrl: "images/enemy/enemy08.png", stats: { hp: 180, speed: 122, shield: 0, threat: 2.15 }, roleIcon: "»", roleText: "高速", abilities: ["fast"], elite: true },
+  { id: "split_toffee", name: "カットアップアイス", spriteName: "elite-split", iconKey: "enemy-split", imageUrl: "images/enemy/enemy09.png", stats: { hp: 214, speed: 78, shield: 0, threat: 2.05 }, roleIcon: "◎", roleText: "分裂", abilities: ["split"], elite: true },
+  { id: "static_moth", name: "ウイスキーヨイ", spriteName: "elite-static", iconKey: "enemy-noise", imageUrl: "images/enemy/enemy10.png", stats: { hp: 246, speed: 82, shield: 0, threat: 2.3 }, roleIcon: "≈", roleText: "妨害", abilities: ["jamPulse"], elite: true }
 ];
 
 const bosses = [
-  { id: "archive_drake", name: "バズ喰いアーカイブ・ドラゴン", spriteName: "boss-archive", iconKey: "boss", imageUrl: "", stats: { hp: 3400, speed: 48, shield: 180, threat: 6 }, roleIcon: "◎", roleText: "ボス", abilities: ["summon", "jamLine", "shieldDome"], phaseAt: 0.55 }
+  { id: "archive_drake", name: "バズ喰いアーカイブ・ドラゴン", spriteName: "boss-archive", iconKey: "boss", imageUrl: "images/enemy/enemy11.png", stats: { hp: 3400, speed: 48, shield: 180, threat: 6 }, roleIcon: "◎", roleText: "ボス", abilities: ["summon", "jamLine", "shieldDome"], phaseAt: 0.55 }
 ];
 
 // Add new stages to this array to expand stage flow and progression.
@@ -683,7 +682,7 @@ function renderRelics() {
     const active = relicProfile.activeSynergyIds.indexOf(def.tags[0]) >= 0;
     const element = document.createElement("div");
     element.className = "relic-entry " + def.rarity + (active ? " synergy-lit" : "");
-    element.innerHTML = '<span class="relic-icon">' + iconSvg(def.iconKey) + "</span>";
+    element.innerHTML = '<span class="relic-icon">' + iconImg(def) + "</span>";
     bindTooltip(element, buildRelicTooltip(def, active));
     refs.relicBar.appendChild(element);
   });
@@ -968,7 +967,11 @@ function spawnEnemy(enemyId, family, startDistance) {
 function createEnemyElement(enemy, def) {
   const element = document.createElement("div");
   element.className = "enemy" + (def.elite ? " elite" : "") + (enemy.isBoss ? " boss" : "");
+  const iconHtml = def.imageUrl && def.imageUrl !== ""
+    ? '<img src="' + def.imageUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">'
+    : "";
   element.innerHTML = [
+    iconHtml,
     '<span class="enemy-hp"><span class="enemy-hp-fill"></span></span>',
     '<span class="enemy-role">', def.roleIcon, "</span>"
   ].join("");

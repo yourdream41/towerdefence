@@ -106,7 +106,7 @@ const characters = [
   {
     id: "planner",
     name: "甘乃あもこ",
-    description: "編成全体の構図を整え、範囲内タワーの攻撃力を押し上げる。",
+    description: "コメントを煽り、範囲内タワーの攻撃力を押し上げる。",
     spriteName: "sprite-planner",
     cssClass: "char-planner",
     iconKey: "planner",
@@ -119,7 +119,7 @@ const characters = [
   {
     id: "hype",
     name: "ふぃなどん",
-    description: "歓声を増幅し、範囲内タワーの回転率を大きく高める。",
+    description: "ウソ泣きをし、範囲内タワーの回転率を大きく高める。",
     spriteName: "sprite-hype",
     cssClass: "char-hype",
     iconKey: "hype",
@@ -127,7 +127,7 @@ const characters = [
     cutinImageUrl: "images/characters/fina2.png",
     stats: { damage: 11, range: 80, cooldown: 1.52, crit: 0.06, critMultiplier: 1.7, projectileSpeed: 360 },
     aura: { range: 160, buffs: { speedBonus: 0.52 }, label: "左フックと右アッパー" },
-    skill: { id: "encore_rush", name: "やっちゃえ！みんな！", description: "7秒間、タワー攻撃速度が大幅上昇。", chargesPerStage: 1 }
+    skill: { id: "encore_rush", name: "やっちゃえ！みんな！", description: "8秒間、タワー攻撃速度が大幅上昇。", chargesPerStage: 1 }
   },
   {
     id: "patissier",
@@ -158,7 +158,7 @@ const characters = [
   {
     id: "clipmaster",
     name: "如月ヒガン",
-    description: "会心連鎖を引き起こし、強烈な決定打を生み出す。",
+    description: "こん棒で風を引き起こし、強烈な打点を生み出す。",
     spriteName: "sprite-clipmaster",
     cssClass: "char-clipmaster",
     iconKey: "clipmaster",
@@ -166,14 +166,14 @@ const characters = [
     cutinImageUrl: "images/characters/higan2.png",
     stats: { damage: 18, range: 160, cooldown: 1.86, crit: 0.12, critMultiplier: 1.95, projectileSpeed: 360 },
     aura: { range: 180, buffs: { critAdd: 0.18, critDamageBonus: 0.72 }, label: "血肉湧き踊る" },
-    skill: { id: "viral_splice", name: "鬼の金棒！", description: "画面内の敵すべてに大ダメージを与える決戦スキル。", chargesPerStage: 1 }
+    skill: { id: "viral_splice", name: "鬼の金棒！", description: "画面内の敵すべてに大ダメージを与える刹那のスキル。", chargesPerStage: 1 }
   }
 ];
 
 const towers = [
-  { id: "mic_tower", name: "コメント弾幕砲", description: "標準的な単体火力。配信の芯を作る主砲。", spriteName: "tower-mic", cssClass: "tower-mic", iconKey: "mic_tower", imageUrl: "images/towers/tower01.png", stats: { damage: 24, range: 134, cooldown: 0.92, crit: 0.12, critMultiplier: 1.8, projectileSpeed: 470 }, abilities: ["single"] },
+  { id: "mic_tower", name: "コメント弾幕砲", description: "標準的な単体火力。配信を司る主砲。", spriteName: "tower-mic", cssClass: "tower-mic", iconKey: "mic_tower", imageUrl: "images/towers/tower01.png", stats: { damage: 24, range: 134, cooldown: 0.92, crit: 0.12, critMultiplier: 1.8, projectileSpeed: 470 }, abilities: ["single"] },
   { id: "mixer_tower", name: "ポロロッカマシンガン", description: "高速で小粒の弾を連射。攻速バフと好相性。", spriteName: "tower-mixer", cssClass: "tower-mixer", iconKey: "mixer_tower", imageUrl: "images/towers/tower02.png", stats: { damage: 12, range: 118, cooldown: 0.38, crit: 0.06, critMultiplier: 1.65, projectileSpeed: 420 }, abilities: ["rapid"] },
-  { id: "comment_cannon", name: "コメント砲台", description: "広めの爆発でまとめて吹き飛ばす範囲砲台。", spriteName: "tower-comment", cssClass: "tower-comment", iconKey: "comment_cannon", imageUrl: "images/towers/tower03.png", stats: { damage: 38, range: 148, cooldown: 1.46, crit: 0.09, critMultiplier: 1.85, projectileSpeed: 330, splash: 46 }, abilities: ["splash"] },
+  { id: "comment_cannon", name: "コマクヤブリー", description: "広めの爆発でまとめて吹き飛ばす範囲砲台。", spriteName: "tower-comment", cssClass: "tower-comment", iconKey: "comment_cannon", imageUrl: "images/towers/tower03.png", stats: { damage: 38, range: 148, cooldown: 1.46, crit: 0.09, critMultiplier: 1.85, projectileSpeed: 330, splash: 46 }, abilities: ["splash"] },
   { id: "candy_shooter", name: "キャンディシューター", description: "軽い減速付きの連射塔。序盤から終盤まで便利。", spriteName: "tower-candy", cssClass: "tower-candy", iconKey: "candy_shooter", imageUrl: "images/towers/tower04.png", stats: { damage: 9, range: 112, cooldown: 0.28, crit: 0.04, critMultiplier: 1.6, projectileSpeed: 450, slow: 0.08 }, abilities: ["rapid", "slow"] },
   { id: "macaron_launcher", name: "マカロンランチャー", description: "重い一撃と大きな爆発。高難度での突破力担当。", spriteName: "tower-macaron", cssClass: "tower-macaron", iconKey: "macaron_launcher", imageUrl: "images/towers/tower05.png", stats: { damage: 60, range: 162, cooldown: 2.08, crit: 0.16, critMultiplier: 2.1, projectileSpeed: 290, splash: 64, heavy: true }, abilities: ["heavy", "splash"] },
   { id: "signal_prism", name: "パフェフレークイヤダー", description: "高い会心率と範囲爆発を持つ上級塔。クリティカルを軸に火力を出す。", spriteName: "tower-prism", cssClass: "tower-prism", iconKey: "signal_prism", imageUrl: "images/towers/tower06.png", stats: { damage: 22, range: 144, cooldown: 0.74, crit: 0.18, critMultiplier: 1.95, projectileSpeed: 410, splash: 24 }, abilities: ["crit", "burst"] }
@@ -181,18 +181,18 @@ const towers = [
 
 const relics = [
   { id: "holy_comments", name: "神コメントログ", description: "全タワー攻撃力 +10%。", spriteName: "relic-comments", cssClass: "relic-comments", iconKey: "comment", imageUrl: "images/relic/relic01.png", rarity: "common", tags: ["studio"], modifiers: { towerDamageBonus: 0.1 } },
-  { id: "buzz_clip", name: "バズ切り抜き", description: "全タワー攻撃速度 +14%。", spriteName: "relic-clip", cssClass: "relic-clip", iconKey: "clip", imageUrl: "images/relic/relic02.png", rarity: "rare", tags: ["studio"], modifiers: { towerSpeedBonus: 0.14 } },
+  { id: "buzz_clip", name: "アーカイブコメント", description: "全タワー攻撃速度 +14%。", spriteName: "relic-clip", cssClass: "relic-clip", iconKey: "clip", imageUrl: "images/relic/relic02.png", rarity: "rare", tags: ["studio"], modifiers: { towerSpeedBonus: 0.14 } },
   { id: "sugar_zoom", name: "ブレベミルク", description: "全タワー射程 +10%。", spriteName: "relic-zoom", cssClass: "relic-zoom", iconKey: "zoom", imageUrl: "images/relic/relic03.png", rarity: "common", tags: ["candy"], modifiers: { towerRangeBonus: 0.1 } },
   { id: "syrup_dream", name: "夢シロップ", description: "スロウ効果がさらに強くなる。", spriteName: "relic-syrup", cssClass: "relic-syrup", iconKey: "dream", imageUrl: "images/relic/relic04.png", rarity: "rare", tags: ["dream"], modifiers: { slowPowerBonus: 0.25 } },
-  { id: "backstage_coffee", name: "ダブルストリーム", description: "各自キャラスキルの使用回数 +1。", spriteName: "relic-coffee", cssClass: "relic-coffee", iconKey: "coffee", imageUrl: "images/relic/relic05.png", rarity: "legendary", tags: ["studio"], modifiers: { skillChargeBonus: 1 } },
+  { id: "backstage_coffee", name: "1日2回ストリーム", description: "各自キャラスキルの使用回数 +1。", spriteName: "relic-coffee", cssClass: "relic-coffee", iconKey: "coffee", imageUrl: "images/relic/relic05.png", rarity: "legendary", tags: ["studio"], modifiers: { skillChargeBonus: 1 } },
   { id: "overload_fader", name: "ロングストリーム", description: "攻撃力 +30% だが射程 -10%。", spriteName: "relic-fader", cssClass: "relic-fader", iconKey: "overload", imageUrl: "images/relic/relic06.png", rarity: "epic", tags: ["studio"], modifiers: { towerDamageBonus: 0.3, towerRangeBonus: -0.1 } },
   { id: "superchat_rain", name: "レインボースパチャ", description: "連鎖撃破に応じて追加火力が伸びる。", spriteName: "relic-rain", cssClass: "relic-rain", iconKey: "rain", imageUrl: "images/relic/relic07.png", rarity: "rare", tags: ["candy"], modifiers: { chainBonusPerKill: 0.03, chainWindowBonus: 0.8 } },
-  { id: "archive_sugar", name: "アーカイブコメント", description: "全タワー会心率 +8%。", spriteName: "relic-archive", cssClass: "relic-archive", iconKey: "archive", imageUrl: "images/relic/relic08.png", rarity: "common", tags: ["candy"], modifiers: { towerCritBonus: 0.08 } },
+  { id: "archive_sugar", name: "不意な一人称オレ", description: "全タワー会心率 +8%。", spriteName: "relic-archive", cssClass: "relic-archive", iconKey: "archive", imageUrl: "images/relic/relic08.png", rarity: "common", tags: ["candy"], modifiers: { towerCritBonus: 0.08 } },
   { id: "midnight_mixer", name: "神リプライ", description: "自キャラ攻撃力 +18%、タワー攻撃力 +8%。", spriteName: "relic-midnight", cssClass: "relic-midnight", iconKey: "mixer", imageUrl: "images/relic/relic09.png", rarity: "epic", tags: ["dream"], modifiers: { towerDamageBonus: 0.08, characterDamageBonus: 0.18 } },
-  { id: "prop_rack", name: "ライブチケット当選", description: "次回以降の報酬候補数 +1。", spriteName: "relic-rack", cssClass: "relic-rack", iconKey: "rack", imageUrl: "images/relic/relic10.png", rarity: "rare", tags: ["studio"], modifiers: { rewardBonusChoices: 1 } },
+  { id: "prop_rack", name: "ゲストはこちら", description: "次回以降の報酬候補数 +1。", spriteName: "relic-rack", cssClass: "relic-rack", iconKey: "rack", imageUrl: "images/relic/relic10.png", rarity: "rare", tags: ["studio"], modifiers: { rewardBonusChoices: 1 } },
   { id: "dream_loop", name: "フォエバードリーム", description: "スロウ中の敵に毎秒追加ダメージ。", spriteName: "relic-loop", cssClass: "relic-loop", iconKey: "loop", imageUrl: "images/relic/relic11.png", rarity: "epic", tags: ["dream"], modifiers: { slowDot: 5 } },
   { id: "sugar_battery", name: "爆発落ちなんてサイテー！", description: "爆発半径が拡大し、範囲塔の制圧力が伸びる。", spriteName: "relic-battery", cssClass: "relic-battery", iconKey: "battery", imageUrl: "images/relic/relic12.png", rarity: "rare", tags: ["candy"], modifiers: { splashBonus: 16 } },
-  { id: "clip_storm", name: "コメント弾幕", description: "強力な全体攻撃スキル『ドリームアタック！』を解禁。", spriteName: "relic-trend", cssClass: "relic-trend", iconKey: "trend", imageUrl: "images/relic/relic13.png", rarity: "legendary", tags: ["studio"], modifiers: { activeSkill: { id: "spark_rain", name: "ドリームアタック！", description: "全敵に大ダメージ。ステージごとに1回使用可能。", chargesPerStage: 1 } } }
+  { id: "clip_storm", name: "コラボ配信！", description: "強力な全体攻撃スキル『ドリームアタック！』を解禁。", spriteName: "relic-trend", cssClass: "relic-trend", iconKey: "trend", imageUrl: "images/relic/relic13.png", rarity: "legendary", tags: ["studio"], modifiers: { activeSkill: { id: "spark_rain", name: "ドリームアタック！", description: "全敵に大ダメージ。ステージごとに1回使用可能。", chargesPerStage: 1 } } }
 ];
 
 const enemies = [
@@ -217,12 +217,12 @@ const bosses = [
 
 // Add new stages to this array to expand stage flow and progression.
 const stages = [
-  { id: "stage1", name: "配信準備室", flavor: "やさしい導入戦。配置の意味とバフの重なりを覚えるステージ。", themeClass: "stage-theme-stage1", enemyScale: { hp: 0.72, speed: 0.84 }, playerBoost: { towerDamageBonus: 0.28, towerSpeedBonus: 0.14, characterDamageBonus: 0.22 }, intermission: 4.8, introDelay: 5, waves: [ { label: "Warmup", packs: [pack("gummy_runner", 6, 0.92, 0), pack("chat_blob", 3, 1.25, 2.8)] }, { label: "Sweet Check", packs: [pack("gummy_runner", 8, 0.76, 0), pack("wafer_guard", 2, 1.8, 2.4)] }, { label: "Comment Flow", packs: [pack("pop_meringue", 8, 0.64, 0), pack("noise_imp", 2, 1.9, 2.8), pack("wafer_guard", 2, 2.2, 6.1)] } ] },
-  { id: "stage2", name: "初配信", flavor: "速い敵と硬い敵が混ざり始める。序盤の役割分担が重要になる。", themeClass: "stage-theme-stage2", enemyScale: { hp: 0.88, speed: 0.94 }, playerBoost: { towerDamageBonus: 0.14, towerSpeedBonus: 0.08, characterDamageBonus: 0.1 }, intermission: 4.4, introDelay: 5, waves: [ { label: "Crunch Roll", packs: [pack("gummy_runner", 8, 0.72, 0), pack("wafer_guard", 3, 1.4, 2.8)] }, { label: "Muted Feed", packs: [pack("noise_imp", 4, 1.15, 0), pack("chat_blob", 8, 0.82, 1.2)] }, { label: "Sugar Relay", packs: [pack("pop_meringue", 12, 0.5, 0), pack("wafer_guard", 4, 1.35, 3.4), pack("gummy_runner", 6, 0.68, 5)] } ] },
-  { id: "stage3", name: "SNSロビー活動", flavor: "ここからエリート登場。単体処理と広範囲火力の両立が必要。", themeClass: "stage-theme-stage3", enemyScale: { hp: 1.18, speed: 1.08 }, intermission: 3.8, introDelay: 6, waves: [ { label: "Clip Hook", packs: [pack("gummy_runner", 12, 0.58, 0), pack("marsh_guard", 1, 0, 2.8, "elite"), pack("chat_blob", 12, 0.66, 3.4)] }, { label: "Backfeed", packs: [pack("noise_imp", 10, 0.8, 0), pack("regen_puff", 2, 0.2, 1.8, "elite"), pack("pop_meringue", 14, 0.42, 4.4)] }, { label: "Turn Point", packs: [pack("wafer_guard", 8, 1.04, 0), pack("rush_cycler", 2, 1.3, 1.6, "elite"), pack("split_toffee", 1, 0, 6.8, "elite")] } ] },
-  { id: "stage4", name: "マカロンシリーズ開始", flavor: "中継地点を守れないと一気に押し込まれる。配置の前後差が試される。", themeClass: "stage-theme-stage4", enemyScale: { hp: 1.3, speed: 1.12 }, intermission: 3.4, introDelay: 6, waves: [ { label: "Spiral Talk", packs: [pack("marsh_guard", 2, 1.2, 0, "elite"), pack("pop_meringue", 20, 0.4, 1.8), pack("noise_imp", 10, 0.74, 4.8)] }, { label: "Relay Furnace", packs: [pack("split_toffee", 2, 1.4, 0.8, "elite"), pack("wafer_guard", 10, 0.84, 0), pack("gummy_runner", 14, 0.52, 3.2)] }, { label: "Audience Pressure", packs: [pack("regen_puff", 2, 1.2, 1.6, "elite"), pack("static_moth", 1, 0, 4.4, "elite"), pack("pop_meringue", 16, 0.4, 0), pack("chat_blob", 12, 0.66, 2.2)] } ] },
-  { id: "stage5", name: "スーパーチャットタイム", flavor: "高難度。レリックと自キャラバフの噛み合いがほぼ前提になる。", themeClass: "stage-theme-stage5", enemyScale: { hp: 1.46, speed: 1.16 }, intermission: 3.1, introDelay: 6, waves: [ { label: "Furnace Kick", packs: [pack("rush_cycler", 3, 1.2, 0, "elite"), pack("noise_imp", 12, 0.66, 1.4), pack("split_toffee", 2, 1.4, 5.4, "elite"), pack("wafer_guard", 12, 0.88, 0)] }, { label: "Boiling Feed", packs: [pack("marsh_guard", 2, 1.6, 0.6, "elite"), pack("regen_puff", 2, 1.4, 2.2, "elite"), pack("pop_meringue", 20, 0.34, 0), pack("noise_imp", 10, 0.56, 3.8), pack("chat_blob", 15, 0.48, 4.8)] }, { label: "Last Heat", packs: [pack("split_toffee", 2, 1.5, 0, "elite"), pack("static_moth", 2, 1.4, 2.8, "elite"), pack("rush_cycler", 3, 1.1, 4.8, "elite"), pack("wafer_guard", 10, 0.78, 1.4), pack("pop_meringue", 14, 0.34, 0)] } ] },
-  { id: "stage6", name: "グラデュエーター", flavor: "最終決戦。ボスの予兆を読み、連携とシナジーで押し切る。", themeClass: "stage-theme-stage6", enemyScale: { hp: 1.6, speed: 1.2 }, intermission: 2.8, introDelay: 6, waves: [ { label: "Archive Edge", packs: [pack("marsh_guard", 2, 1.2, 0, "elite"), pack("rush_cycler", 2, 1.2, 2.4, "elite"), pack("split_toffee", 2, 1.4, 5.6, "elite"), pack("noise_imp", 12, 0.54, 0)] }, { label: "System Collapse", packs: [pack("regen_puff", 2, 1.4, 0.8, "elite"), pack("static_moth", 2, 1.4, 3.6, "elite"), pack("pop_meringue", 24, 0.3, 0), pack("wafer_guard", 12, 0.74, 2.2)] }, { label: "Last Upload", packs: [pack("marsh_guard", 2, 1.5, 0.4, "elite"), pack("rush_cycler", 2, 1.2, 2.2, "elite"), pack("split_toffee", 1, 0, 4.4, "elite"), pack("pop_meringue", 18, 0.32, 0), pack("noise_imp", 12, 0.48, 2.6)] }, { label: "Boss Finale", packs: [pack("archive_drake", 1, 0, 0, "boss"), pack("noise_imp", 6, 0.8, 8.6), pack("gummy_runner", 10, 0.42, 16)] } ] }
+  { id: "stage1", name: "配信準備室", flavor: "SNSのアカウント作ったり、初配信の準備をしたり大変だよね", themeClass: "stage-theme-stage1", enemyScale: { hp: 0.72, speed: 0.84 }, playerBoost: { towerDamageBonus: 0.28, towerSpeedBonus: 0.14, characterDamageBonus: 0.22 }, intermission: 4.8, introDelay: 5, waves: [ { label: "Warmup", packs: [pack("gummy_runner", 6, 0.92, 0), pack("chat_blob", 3, 1.25, 2.8)] }, { label: "Sweet Check", packs: [pack("gummy_runner", 8, 0.76, 0), pack("wafer_guard", 2, 1.8, 2.4)] }, { label: "Comment Flow", packs: [pack("pop_meringue", 8, 0.64, 0), pack("noise_imp", 2, 1.9, 2.8), pack("wafer_guard", 2, 2.2, 6.1)] } ] },
+  { id: "stage2", name: "初配信", flavor: "緊張と楽しさのマカロナージュ！でも大丈夫誰か来てくれる！", themeClass: "stage-theme-stage2", enemyScale: { hp: 0.88, speed: 0.94 }, playerBoost: { towerDamageBonus: 0.14, towerSpeedBonus: 0.08, characterDamageBonus: 0.1 }, intermission: 4.4, introDelay: 5, waves: [ { label: "Crunch Roll", packs: [pack("gummy_runner", 8, 0.72, 0), pack("wafer_guard", 3, 1.4, 2.8)] }, { label: "Muted Feed", packs: [pack("noise_imp", 4, 1.15, 0), pack("chat_blob", 8, 0.82, 1.2)] }, { label: "Sugar Relay", packs: [pack("pop_meringue", 12, 0.5, 0), pack("wafer_guard", 4, 1.35, 3.4), pack("gummy_runner", 6, 0.68, 5)] } ] },
+  { id: "stage3", name: "コラボ配信！", flavor: "友達ができた！好きな世界をさあ楽しむぞ！", themeClass: "stage-theme-stage3", enemyScale: { hp: 1.18, speed: 1.08 }, intermission: 3.8, introDelay: 6, waves: [ { label: "Clip Hook", packs: [pack("gummy_runner", 12, 0.58, 0), pack("marsh_guard", 1, 0, 2.8, "elite"), pack("chat_blob", 12, 0.66, 3.4)] }, { label: "Backfeed", packs: [pack("noise_imp", 10, 0.8, 0), pack("regen_puff", 2, 0.2, 1.8, "elite"), pack("pop_meringue", 14, 0.42, 4.4)] }, { label: "Turn Point", packs: [pack("wafer_guard", 8, 1.04, 0), pack("rush_cycler", 2, 1.3, 1.6, "elite"), pack("split_toffee", 1, 0, 6.8, "elite")] } ] },
+  { id: "stage4", name: "マカロンシリーズ開始", flavor: "軌道に乗ってどんどんリスナーも友達も増えてく！", themeClass: "stage-theme-stage4", enemyScale: { hp: 1.3, speed: 1.12 }, intermission: 3.4, introDelay: 6, waves: [ { label: "Spiral Talk", packs: [pack("marsh_guard", 2, 1.2, 0, "elite"), pack("pop_meringue", 20, 0.4, 1.8), pack("noise_imp", 10, 0.74, 4.8)] }, { label: "Relay Furnace", packs: [pack("split_toffee", 2, 1.4, 0.8, "elite"), pack("wafer_guard", 10, 0.84, 0), pack("gummy_runner", 14, 0.52, 3.2)] }, { label: "Audience Pressure", packs: [pack("regen_puff", 2, 1.2, 1.6, "elite"), pack("static_moth", 1, 0, 4.4, "elite"), pack("pop_meringue", 16, 0.4, 0), pack("chat_blob", 12, 0.66, 2.2)] } ] },
+  { id: "stage5", name: "スーパーチャットタイム", flavor: "やりたいことをやってお金も入ってくる！夢！？", themeClass: "stage-theme-stage5", enemyScale: { hp: 1.46, speed: 1.16 }, intermission: 3.1, introDelay: 6, waves: [ { label: "Furnace Kick", packs: [pack("rush_cycler", 3, 1.2, 0, "elite"), pack("noise_imp", 12, 0.66, 1.4), pack("split_toffee", 2, 1.4, 5.4, "elite"), pack("wafer_guard", 12, 0.88, 0)] }, { label: "Boiling Feed", packs: [pack("marsh_guard", 2, 1.6, 0.6, "elite"), pack("regen_puff", 2, 1.4, 2.2, "elite"), pack("pop_meringue", 20, 0.34, 0), pack("noise_imp", 10, 0.56, 3.8), pack("chat_blob", 15, 0.48, 4.8)] }, { label: "Last Heat", packs: [pack("split_toffee", 2, 1.5, 0, "elite"), pack("static_moth", 2, 1.4, 2.8, "elite"), pack("rush_cycler", 3, 1.1, 4.8, "elite"), pack("wafer_guard", 10, 0.78, 1.4), pack("pop_meringue", 14, 0.34, 0)] } ] },
+  { id: "stage6", name: "これからもずっと", flavor: "日々怠惰との戦い！それでもみんなと未来へ！", themeClass: "stage-theme-stage6", enemyScale: { hp: 1.6, speed: 1.2 }, intermission: 2.8, introDelay: 6, waves: [ { label: "Archive Edge", packs: [pack("marsh_guard", 2, 1.2, 0, "elite"), pack("rush_cycler", 2, 1.2, 2.4, "elite"), pack("split_toffee", 2, 1.4, 5.6, "elite"), pack("noise_imp", 12, 0.54, 0)] }, { label: "System Collapse", packs: [pack("regen_puff", 2, 1.4, 0.8, "elite"), pack("static_moth", 2, 1.4, 3.6, "elite"), pack("pop_meringue", 24, 0.3, 0), pack("wafer_guard", 12, 0.74, 2.2)] }, { label: "Last Upload", packs: [pack("marsh_guard", 2, 1.5, 0.4, "elite"), pack("rush_cycler", 2, 1.2, 2.2, "elite"), pack("split_toffee", 1, 0, 4.4, "elite"), pack("pop_meringue", 18, 0.32, 0), pack("noise_imp", 12, 0.48, 2.6)] }, { label: "Boss Finale", packs: [pack("archive_drake", 1, 0, 0, "boss"), pack("noise_imp", 6, 0.8, 8.6), pack("gummy_runner", 10, 0.42, 16)] } ] }
 ];
 
 const refs = {
@@ -265,7 +265,7 @@ const refs = {
   metricDeploy: document.getElementById("metricDeploy"),
   pressureLabel: document.getElementById("pressureLabel"),
   pressureFill: document.getElementById("pressureFill"),
-  synergyFeed: document.getElementById("synergyFeed"),
+  synergyFeed: document.getElementById("synergyFeed") || document.createElement("div"),
   skillBar: document.getElementById("skillBar"),
   startOverlay: document.getElementById("startOverlay"),
   startCharacterLane: document.getElementById("startCharacterLane"),
@@ -689,6 +689,7 @@ function renderRelics() {
 }
 
 function renderSynergyFeed() {
+  if (!refs.synergyFeed) return;
   const relicProfile = getRelicProfile();
   refs.synergyFeed.innerHTML = "";
   SYNERGY_INFO.forEach(function (synergy) {
@@ -968,7 +969,7 @@ function createEnemyElement(enemy, def) {
   const element = document.createElement("div");
   element.className = "enemy" + (def.elite ? " elite" : "") + (enemy.isBoss ? " boss" : "");
   const iconHtml = def.imageUrl && def.imageUrl !== ""
-    ? '<img src="' + def.imageUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">'
+    ? '<img src="' + def.imageUrl + '" style="position:absolute;width:100%;height:100%;object-fit:cover;border-radius:50%;top:0;left:0;" alt="">'
     : "";
   element.innerHTML = [
     iconHtml,

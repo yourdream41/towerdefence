@@ -618,8 +618,8 @@ button {
 }
 
 .enemy {
-  width: 34px;
-  height: 34px;
+  width: 41px;
+  height: 41px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.28), transparent 36%),
@@ -635,8 +635,8 @@ button {
 }
 
 .enemy.boss {
-  width: 64px;
-  height: 64px;
+  width: 77px;
+  height: 77px;
   transform: translate(-50%, -50%) scale(1.18);
   background:
     radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.28), transparent 34%),
